@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Time Span Selector</string>
+
+    <!-- ... Time Span Selector strings ... -->
+    <string name="tss_range_changed_announcement">Selected span from %1$s to %2$s.</string>
+    <string name="tss_overnight_a11y">Overnight.</string>
+    <string name="tss_accessibility_range_selected">Selected span: %1$s to %2$s.</string>
+    <string name="tss_accessibility_range_overnight_selected">Selected span: %1$s to %2$s, overnight.</string>
+    <string name="tss_content_description_time_span_selector">Time span selector. Use two thumb selector to adjust start and end times.</string>
+    <string name="tss_am">AM</string>
+    <string name="tss_pm">PM</string>
+    <string name="tss_description_template">Selected time span: %1$s to %2$s</string>
+    <string name="tss_overnight_suffix">(overnight)</string>
+</resources>
