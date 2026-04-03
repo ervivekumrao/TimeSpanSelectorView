@@ -64,14 +64,14 @@ afterEvaluate {
         publications {
             register<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "com.github.vivekumrao"
+                groupId = "io.github.ervivekumrao"
                 artifactId = "time-span-selector"
                 version = "1.0.0"
 
                 pom {
                     name.set("Time Span Selector")
                     description.set("A highly customizable Time Span Selector library for Android (Circular and Linear).")
-                    url.set("https://github.com/vivekumrao/TimeSpanSelector")
+                    url.set("https://github.com/ervivekumrao/TimeSpanSelectorView")
                     licenses {
                         license {
                             name.set("The Apache License, Version 2.0")
@@ -80,15 +80,15 @@ afterEvaluate {
                     }
                     developers {
                         developer {
-                            id.set("vivekumrao")
+                            id.set("ervivekumrao")
                             name.set("Vivek Umrao")
                             email.set("manuscriptcode@gmail.com")
                         }
                     }
                     scm {
-                        connection.set("scm:git:github.com/vivekumrao/TimeSpanSelector.git")
-                        developerConnection.set("scm:git:ssh://github.com/vivekumrao/TimeSpanSelector.git")
-                        url.set("https://github.com/vivekumrao/TimeSpanSelector/tree/main")
+                        connection.set("scm:git:github.com/ervivekumrao/TimeSpanSelectorView.git")
+                        developerConnection.set("scm:git:ssh://github.com/ervivekumrao/TimeSpanSelectorView.git")
+                        url.set("https://github.com/ervivekumrao/TimeSpanSelectorView/tree/main")
                     }
                 }
             }
