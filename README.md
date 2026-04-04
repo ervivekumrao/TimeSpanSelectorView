@@ -33,7 +33,7 @@ Add the dependency to your `build.gradle` file:
 
 ```gradle
 dependencies {
-    implementation 'com.github.vivekumrao:time-span-selector:1.0.0'
+    implementation 'io.github.ervivekumrao:time-span-selector:1.0.0'
 }
 ```
 

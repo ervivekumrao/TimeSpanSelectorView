@@ -9,6 +9,7 @@ activity = "1.13.0"
 constraintlayout = "2.2.1"
 navigationFragment = "2.9.7"
 navigationUi = "2.9.7"
+mavenPublish = "0.36.0"
 
 mockito = "5.23.0"
 mockito-kotlin = "6.3.0"
@@ -33,4 +34,5 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-
+maven-publish = { id = "maven-publish"}
+maven-central-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
