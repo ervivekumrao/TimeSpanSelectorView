@@ -17,6 +17,7 @@
 package vivek.umrao.time.span.selector;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
+import com.google.android.material.color.MaterialColors;
 
 /**
  * Base class for time span selectors containing shared logic and attributes.
@@ -58,17 +61,17 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     protected int minDurationMinutes = 0;
     protected int maxDurationMinutes = MINUTES_IN_DAY;
 
-    @ColorInt protected int trackColor = DEFAULT_TRACK_COLOR;
-    @ColorInt protected int rangeColor = DEFAULT_RANGE_COLOR;
-    @ColorInt protected int rangeTextColor = DEFAULT_RANGE_TEXT_COLOR;
-    @ColorInt protected int thumbFillColor = DEFAULT_THUMB_FILL_COLOR;
-    @ColorInt protected int thumbStrokeColor = DEFAULT_THUMB_STROKE_COLOR;
-    @ColorInt protected int thumbShadowColor = DEFAULT_THUMB_SHADOW_COLOR;
-    @ColorInt protected int startThumbDrawableTintColor = DEFAULT_THUMB_DRAWABLE_TINT_COLOR;
-    @ColorInt protected int endThumbDrawableTintColor = DEFAULT_THUMB_DRAWABLE_TINT_COLOR;
-    @ColorInt protected int hourTickColor = DEFAULT_TICK_COLOR;
-    @ColorInt protected int minuteTickColor = DEFAULT_TICK_COLOR;
-    @ColorInt protected int tickLabelColor = DEFAULT_TICK_LABEL_COLOR;
+    @ColorInt protected int trackColor;
+    @ColorInt protected int rangeColor;
+    @ColorInt protected int rangeTextColor;
+    @ColorInt protected int thumbFillColor;
+    @ColorInt protected int thumbStrokeColor;
+    @ColorInt protected int thumbShadowColor;
+    @ColorInt protected int startThumbDrawableTintColor;
+    @ColorInt protected int endThumbDrawableTintColor;
+    @ColorInt protected int hourTickColor;
+    @ColorInt protected int minuteTickColor;
+    @ColorInt protected int tickLabelColor;
 
     protected float trackWidth;
     protected float thumbRadius;
@@ -105,6 +108,23 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
 
     public BaseTimeSpanSelector(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    /**
+     * Initializes default colors from resources and theme.
+     */
+    protected void initializeDefaultColors() {
+        trackColor = MaterialColors.getColor(this, android.R.attr.textColorSecondaryNoDisable, Color.DKGRAY);
+        rangeColor = MaterialColors.getColor(this, android.R.attr.colorPrimary, Color.YELLOW);
+        rangeTextColor = MaterialColors.getColor(this, android.R.attr.textColorPrimary, Color.BLACK);
+        thumbFillColor = rangeColor;
+        thumbStrokeColor = MaterialColors.getColor(this, android.R.attr.strokeColor, Color.DKGRAY);
+        thumbShadowColor = MaterialColors.getColor(this, android.R.attr.shadowColor, Color.BLACK);
+        startThumbDrawableTintColor = MaterialColors.getColor(this, android.R.attr.thumbTint, Color.BLACK);
+        endThumbDrawableTintColor = startThumbDrawableTintColor;
+        hourTickColor = rangeTextColor;
+        minuteTickColor = rangeTextColor;
+        tickLabelColor = rangeTextColor;
     }
 
     /**

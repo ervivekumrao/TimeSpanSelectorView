@@ -79,6 +79,7 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
     private void init(Context context, @Nullable AttributeSet attrs) {
         accessibilityManager = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
         initializeDefaultValues();
+        initializeDefaultColors();
         if (attrs != null) {
             initializeFromAttributes(context, attrs);
         }

@@ -67,6 +67,7 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
      */
     private void init(Context context, @Nullable AttributeSet attrs) {
         initializeDefaultValues();
+        initializeDefaultColors();
         if (attrs != null) {
             initializeFromAttributes(context, attrs);
         }

@@ -9,13 +9,10 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-/build
 /TimeSpanSelector/build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
-
-# Ignore app module and its build artifacts
-/app/
+/app/build/
 /build/

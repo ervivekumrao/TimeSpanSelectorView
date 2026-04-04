@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Move a selector to see callback data"
+            android:text="@string/move_a_selector_to_see_callback_data"
             android:textAlignment="center"
             android:textStyle="italic" />
 
@@ -34,13 +34,11 @@
             android:layout_height="350dp"
             app:tss_allowOvernightRange="true"
             app:tss_endThumbDrawable="@drawable/ic_dark_mode"
-            app:tss_endThumbDrawableTintColor="@color/purple_200"
             app:tss_hourTickHeight="10dp"
             app:tss_hourTickWidth="2dp"
             app:tss_is24HourFormat="false"
             app:tss_minuteTickHeight="5dp"
             app:tss_minuteTickWidth="1dp"
-            app:tss_rangeColor="#66007AFF"
             app:tss_rangeEndInMinutes="1200"
             app:tss_rangeStartTime="04:08"
             app:tss_rangeTextFormat="%1$s\nto\n%2$s"
@@ -51,15 +49,11 @@
             app:tss_showRangeText="true"
             app:tss_showTicks="true"
             app:tss_startThumbDrawable="@drawable/ic_light_mode"
-            app:tss_startThumbDrawableTintColor="@color/purple_500"
             app:tss_thumbElevation="10dp"
-            app:tss_thumbFillColor="#FF007AFF"
             app:tss_thumbMinuteStep="15"
             app:tss_thumbRadius="16dp"
-            app:tss_thumbShadowColor="@color/purple_500"
             app:tss_thumbShadowDx="5sp"
             app:tss_thumbShadowDy="5sp"
-            app:tss_thumbStrokeColor="@color/purple_200"
             app:tss_thumbStrokeWidth="1sp"
             app:tss_tickDistanceFromTrack="5dp"
             app:tss_showTickLabels="true"
@@ -67,9 +61,7 @@
             app:tss_tickLabelDistanceFromTick="35dp"
             app:tss_tickLabelSize="12sp"
             app:tss_tickLabelStyle="bold_italic"
-            app:tss_trackColor="#FFE0E0E0"
-            app:tss_trackWidth="10dp"
-            app:tss_textColor="@color/teal_700"/>
+            app:tss_trackWidth="10dp"/>
 
         <vivek.umrao.time.span.selector.LinearTimeSpanSelector
             android:id="@+id/linearTimeSpanSelector"
