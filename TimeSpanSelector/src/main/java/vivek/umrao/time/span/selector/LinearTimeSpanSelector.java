@@ -37,16 +37,16 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
 
     private float lastTouchX;
     private final Paint trackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint rangePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint spanPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint thumbPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint thumbStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint tickPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint tickLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint rangeTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint spanTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private final RectF trackRect = new RectF();
     private Thumb activeThumb = Thumb.NONE;
-    private float rangeTextY;
+    private float spanTextY;
     private float tickY;
 
     public LinearTimeSpanSelector(Context context) {
@@ -91,11 +91,11 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
         thumbStrokeWidth = dp(0f);
         tickDistanceFromTrack = dp(0);
         tickLabelDistanceFromTick = dp(0);
-        rangeTextSize = sp(14f);
+        spanTextSize = sp(14f);
         thumbShadowDx = dp(2f);
         thumbShadowDy = dp(2f);
         thumbElevation = dp(4f);
-        isOvernightRangeAllowed = false; // Linear picker typically doesn't support overnight
+        isOvernightSpanAllowed = false; // Linear selector typically doesn't support overnight
     }
 
     /**
@@ -104,7 +104,7 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
     private void initializeFromAttributes(Context context, @NonNull AttributeSet attrs) {
         try (TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LinearTimeSpanSelector)) {
             thumbMinuteStep = a.getInt(R.styleable.LinearTimeSpanSelector_tss_thumbMinuteStep, DEFAULT_THUMB_MINUTE_STEP);
-            isOvernightRangeAllowed = a.getBoolean(R.styleable.LinearTimeSpanSelector_tss_allowOvernightRange, isOvernightRangeAllowed);
+            //isOvernightSpanAllowed = a.getBoolean(R.styleable.LinearTimeSpanSelector_tss_allowOvernightSpan, isOvernightSpanAllowed);
 
             currentStartMinutes = getStartTimeFromAttrs(a);
             currentEndMinutes = getEndTimeFromAttrs(a);
@@ -113,7 +113,7 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
 
             trackWidth = a.getDimension(R.styleable.LinearTimeSpanSelector_tss_trackWidth, trackWidth);
             trackColor = a.getColor(R.styleable.LinearTimeSpanSelector_tss_trackColor, trackColor);
-            rangeColor = a.getColor(R.styleable.LinearTimeSpanSelector_tss_rangeColor, rangeColor);
+            spanColor = a.getColor(R.styleable.LinearTimeSpanSelector_tss_spanColor, spanColor);
             thumbFillColor = a.getColor(R.styleable.LinearTimeSpanSelector_tss_thumbFillColor, thumbFillColor);
             thumbStrokeColor = a.getColor(R.styleable.LinearTimeSpanSelector_tss_thumbStrokeColor, thumbStrokeColor);
             thumbStrokeWidth = a.getDimension(R.styleable.LinearTimeSpanSelector_tss_thumbStrokeWidth, thumbStrokeWidth);
@@ -147,30 +147,30 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
             is24HourFormat = a.getBoolean(R.styleable.LinearTimeSpanSelector_tss_is24HourFormat, is24HourFormat);
             showAmPmLabels = a.getBoolean(R.styleable.LinearTimeSpanSelector_tss_showAmPmLabels, showAmPmLabels);
             showTickLabels = a.getBoolean(R.styleable.LinearTimeSpanSelector_tss_showTickLabels, showTickLabels);
-            isRangeTextShown = a.getBoolean(R.styleable.LinearTimeSpanSelector_tss_showRangeText, isRangeTextShown);
+            isSpanTextShown = a.getBoolean(R.styleable.LinearTimeSpanSelector_tss_showSpanText, isSpanTextShown);
 
             if (a.hasValue(R.styleable.LinearTimeSpanSelector_tss_textColor)) {
                 int commonColor = a.getColor(R.styleable.LinearTimeSpanSelector_tss_textColor, Color.BLACK);
                 tickLabelColor = commonColor;
-                rangeTextColor = commonColor;
+                spanTextColor = commonColor;
             }
 
-            rangeTextColor = a.getColor(R.styleable.LinearTimeSpanSelector_tss_rangeTextColor, rangeTextColor);
+            spanTextColor = a.getColor(R.styleable.LinearTimeSpanSelector_tss_spanTextColor, spanTextColor);
             tickLabelColor = a.getColor(R.styleable.LinearTimeSpanSelector_tss_tickLabelColor, tickLabelColor);
-            rangeTextSize = a.getDimension(R.styleable.LinearTimeSpanSelector_tss_rangeTextSize, rangeTextSize);
-            rangeTextStyle = a.getInt(R.styleable.LinearTimeSpanSelector_tss_rangeTextStyle, rangeTextStyle);
+            spanTextSize = a.getDimension(R.styleable.LinearTimeSpanSelector_tss_spanTextSize, spanTextSize);
+            spanTextStyle = a.getInt(R.styleable.LinearTimeSpanSelector_tss_spanTextStyle, spanTextStyle);
 
-            int pos = a.getInt(R.styleable.LinearTimeSpanSelector_tss_rangeTextPosition, 1);
+            int pos = a.getInt(R.styleable.LinearTimeSpanSelector_tss_spanTextPosition, 1);
             if (pos == 0) {
-                rangeTextPosition = RangeTextPosition.TOP;
+                spanTextPosition = SpanTextPosition.TOP;
             } else if (pos == 2) {
-                rangeTextPosition = RangeTextPosition.CENTER;
+                spanTextPosition = SpanTextPosition.CENTER;
             } else {
-                rangeTextPosition = RangeTextPosition.BOTTOM;
+                spanTextPosition = SpanTextPosition.BOTTOM;
             }
 
-            String format = a.getString(R.styleable.LinearTimeSpanSelector_tss_rangeTextFormat);
-            if (format != null) rangeTextFormat = format;
+            String format = a.getString(R.styleable.LinearTimeSpanSelector_tss_spanTextFormat);
+            if (format != null) spanTextFormat = format;
 
             int tickStyle = a.getInt(R.styleable.LinearTimeSpanSelector_tss_tickEdgeStyle, 1);
             tickEdgeStyle = (tickStyle == 0) ? TickEdgeStyle.ROUND : TickEdgeStyle.BUTT;
@@ -178,8 +178,8 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
     }
 
     private int getStartTimeFromAttrs(TypedArray a) {
-        int minutes = a.getInt(R.styleable.LinearTimeSpanSelector_tss_rangeStartInMinutes, currentStartMinutes);
-        String timeStr = a.getString(R.styleable.LinearTimeSpanSelector_tss_rangeStartTime);
+        int minutes = a.getInt(R.styleable.LinearTimeSpanSelector_tss_spanStartInMinutes, currentStartMinutes);
+        String timeStr = a.getString(R.styleable.LinearTimeSpanSelector_tss_spanStartTime);
         if (timeStr != null) {
             try {
                 minutes = TimeUtils.convertTimeToMinutes(timeStr);
@@ -190,8 +190,8 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
     }
 
     private int getEndTimeFromAttrs(TypedArray a) {
-        int minutes = a.getInt(R.styleable.LinearTimeSpanSelector_tss_rangeEndInMinutes, currentEndMinutes);
-        String timeStr = a.getString(R.styleable.LinearTimeSpanSelector_tss_rangeEndTime);
+        int minutes = a.getInt(R.styleable.LinearTimeSpanSelector_tss_spanEndInMinutes, currentEndMinutes);
+        String timeStr = a.getString(R.styleable.LinearTimeSpanSelector_tss_spanEndTime);
         if (timeStr != null) {
             try {
                 minutes = TimeUtils.convertTimeToMinutes(timeStr);
@@ -206,7 +206,7 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
      */
     private void setupPaints() {
         trackPaint.setStyle(Paint.Style.FILL);
-        rangePaint.setStyle(Paint.Style.FILL);
+        spanPaint.setStyle(Paint.Style.FILL);
         thumbPaint.setStyle(Paint.Style.FILL);
         thumbPaint.setColor(thumbFillColor);
         if (thumbElevation > 0) {
@@ -221,26 +221,26 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
         tickLabelPaint.setTextSize(tickLabelSize);
         tickLabelPaint.setTextAlign(Paint.Align.CENTER);
         tickLabelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, tickLabelStyle));
-        rangeTextPaint.setColor(rangeTextColor);
-        rangeTextPaint.setTextSize(rangeTextSize);
-        rangeTextPaint.setTextAlign(Paint.Align.CENTER);
-        rangeTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, rangeTextStyle));
+        spanTextPaint.setColor(spanTextColor);
+        spanTextPaint.setTextSize(spanTextSize);
+        spanTextPaint.setTextAlign(Paint.Align.CENTER);
+        spanTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, spanTextStyle));
     }
 
     /**
-     * Set the color of the range summary text for the linear slider.
+     * Set the color of the span summary text for the linear selector.
      *
      * @param color The text color.
      */
     @Override
-    public void setRangeTextColor(int color) {
-        super.setRangeTextColor(color);
-        rangeTextPaint.setColor(rangeTextColor);
+    public void setSpanTextColor(int color) {
+        super.setSpanTextColor(color);
+        spanTextPaint.setColor(spanTextColor);
         invalidate();
     }
 
     /**
-     * Set the color of the tick labels for the linear slider.
+     * Set the color of the tick labels for the linear selector.
      *
      * @param color The label color.
      */
@@ -267,20 +267,20 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
     private float calculateTotalHeight() {
         float h = Math.max(trackWidth, thumbRadius * 2);
         if (showTicks) h += calculateTickSpaceHeight();
-        if (isRangeTextShown) h += calculateRangeTextHeight() + dp(8);
+        if (isSpanTextShown) h += calculateSpanTextHeight() + dp(8);
         return h;
     }
 
     /**
-     * Calculates the vertical space occupied by the range summary text.
+     * Calculates the vertical space occupied by the span summary text.
      *
      * @return Text height in pixels.
      */
-    private float calculateRangeTextHeight() {
-        if (!isRangeTextShown) return 0;
-        Paint.FontMetrics fm = rangeTextPaint.getFontMetrics();
+    private float calculateSpanTextHeight() {
+        if (!isSpanTextShown) return 0;
+        Paint.FontMetrics fm = spanTextPaint.getFontMetrics();
         float lineHeight = fm.descent - fm.ascent;
-        String text = getFormattedRangeText();
+        String text = getFormattedSpanText();
         int lines = text.split("\n").length;
         return lines * lineHeight;
     }
@@ -292,7 +292,7 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
     }
 
     private void updateLayout(int w, int h) {
-        float rangeTextH = calculateRangeTextHeight();
+        float spanTextH = calculateSpanTextHeight();
         float tickSpaceH = calculateTickSpaceHeight();
         float coreH = Math.max(trackWidth, thumbRadius * 2);
         float margin = dp(8);
@@ -302,9 +302,9 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
 
         float currentY = getPaddingTop() + Math.max(0, (availableH - totalNeeded) / 2f);
 
-        if (rangeTextPosition == RangeTextPosition.TOP && isRangeTextShown) {
-            rangeTextY = currentY;
-            currentY += rangeTextH + margin;
+        if (spanTextPosition == SpanTextPosition.TOP && isSpanTextShown) {
+            spanTextY = currentY;
+            currentY += spanTextH + margin;
         }
 
         float trackCenterY = currentY + coreH / 2f;
@@ -319,8 +319,8 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
             tickY = 0;
         }
 
-        if (isRangeTextShown && (rangeTextPosition == RangeTextPosition.BOTTOM || rangeTextPosition == RangeTextPosition.CENTER)) {
-            rangeTextY = currentY + margin;
+        if (isSpanTextShown && (spanTextPosition == SpanTextPosition.BOTTOM || spanTextPosition == SpanTextPosition.CENTER)) {
+            spanTextY = currentY + margin;
         }
     }
 
@@ -361,9 +361,9 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
                     int newMin = positionToMinutes(minutesToPosition(activeThumb == Thumb.START ? currentStartMinutes : currentEndMinutes) + dx);
                     newMin = TimeUtils.snapToStep(newMin, thumbMinuteStep);
                     if (activeThumb == Thumb.START) {
-                        updateRange(newMin, currentEndMinutes, true);
+                        updateSpan(newMin, currentEndMinutes, true);
                     } else {
-                        updateRange(currentStartMinutes, newMin, false);
+                        updateSpan(currentStartMinutes, newMin, false);
                     }
                     lastTouchX = x;
                     return true;
@@ -375,7 +375,7 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
                     if (dragChangeListener != null) {
                         dragChangeListener.onDragStop(activeThumb);
                     }
-                    notifyRangeChanged(true);
+                    notifySpanChanged(true);
                     performClick();
                 }
                 activeThumb = Thumb.NONE;
@@ -430,37 +430,37 @@ public class LinearTimeSpanSelector extends BaseTimeSpanSelector {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        if (isRangeTextShown && rangeTextPosition == RangeTextPosition.TOP) {
-            drawRangeText(canvas, rangeTextY);
+        if (isSpanTextShown && spanTextPosition == SpanTextPosition.TOP) {
+            drawSpanText(canvas, spanTextY);
         }
         trackPaint.setColor(trackColor);
         canvas.drawRoundRect(trackRect, trackRect.height() / 2, trackRect.height() / 2, trackPaint);
         if (showTicks) drawTicks(canvas);
         float sX = minutesToPosition(currentStartMinutes);
         float eX = minutesToPosition(currentEndMinutes);
-        rangePaint.setColor(rangeColor);
-        canvas.drawRect(sX, trackRect.top, eX, trackRect.bottom, rangePaint);
+        spanPaint.setColor(spanColor);
+        canvas.drawRect(sX, trackRect.top, eX, trackRect.bottom, spanPaint);
         drawSingleThumb(canvas, sX, trackRect.centerY(), startThumbDrawable, startThumbDrawableTintColor);
         drawSingleThumb(canvas, eX, trackRect.centerY(), endThumbDrawable, endThumbDrawableTintColor);
-        if (isRangeTextShown && (rangeTextPosition == RangeTextPosition.BOTTOM || rangeTextPosition == RangeTextPosition.CENTER)) {
-            drawRangeText(canvas, rangeTextY);
+        if (isSpanTextShown && (spanTextPosition == SpanTextPosition.BOTTOM || spanTextPosition == SpanTextPosition.CENTER)) {
+            drawSpanText(canvas, spanTextY);
         }
     }
 
     /**
-     * Draws the range summary text at the specified Y position.
+     * Draws the span summary text at the specified Y position.
      *
      * @param canvas The canvas to draw on.
      * @param y      The vertical baseline for the first line.
      */
-    private void drawRangeText(Canvas canvas, float y) {
-        String text = getFormattedRangeText();
+    private void drawSpanText(Canvas canvas, float y) {
+        String text = getFormattedSpanText();
         String[] lines = text.split("\n");
-        Paint.FontMetrics fm = rangeTextPaint.getFontMetrics();
+        Paint.FontMetrics fm = spanTextPaint.getFontMetrics();
         float lineHeight = fm.descent - fm.ascent;
         float curY = y - fm.ascent;
         for (String line : lines) {
-            canvas.drawText(line, getWidth() / 2f, curY, rangeTextPaint);
+            canvas.drawText(line, getWidth() / 2f, curY, spanTextPaint);
             curY += lineHeight;
         }
     }

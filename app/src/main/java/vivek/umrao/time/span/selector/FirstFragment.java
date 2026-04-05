@@ -31,9 +31,9 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TimeSpanSelector.OnRangeChangeListener listener = new TimeSpanSelector.OnRangeChangeListener() {
+        TimeSpanSelector.OnSpanChangeListener listener = new TimeSpanSelector.OnSpanChangeListener() {
             @Override
-            public void onRangeChanged(int startMinutes, int endMinutes, boolean isOvernight) {
+            public void onSpanChanged(int startMinutes, int endMinutes, boolean isOvernight) {
                 updateCallbackText(startMinutes, endMinutes, isOvernight);
             }
 
@@ -43,8 +43,8 @@ public class FirstFragment extends Fragment {
             }
         };
 
-        binding.timeSpanDial.setOnRangeChangeListener(listener);
-        binding.linearTimeSpanSelector.setOnRangeChangeListener(listener);
+        binding.timeSpanDial.setOnSpanChangeListener(listener);
+        binding.linearTimeSpanSelector.setOnSpanChangeListener(listener);
 
         // Demonstrating granular listeners
         binding.timeSpanDial.setOnTimeChangeListener(new TimeSpanSelector.OnTimeChangeListener() {
@@ -78,8 +78,8 @@ public class FirstFragment extends Fragment {
         });
 
         // Initial update
-        updateCallbackText(binding.timeSpanDial.getRangeStartInMinutes(), 
-                binding.timeSpanDial.getRangeEndInMinutes(), 
+        updateCallbackText(binding.timeSpanDial.getSpanStartInMinutes(), 
+                binding.timeSpanDial.getSpanEndInMinutes(), 
                 binding.timeSpanDial.isOvernight());
 
         binding.buttonFirst.setOnClickListener(v ->
@@ -94,7 +94,7 @@ public class FirstFragment extends Fragment {
         int duration = (end >= start) ? (end - start) : (1440 - start + end);
         
         String text = String.format(Locale.getDefault(), 
-            "Range: %s - %s\nDuration: %d mins | Overnight: %b", 
+            "Span: %s - %s\nDuration: %d mins | Overnight: %b",
             startTime, endTime, duration, overnight);
         
         binding.callbackText.setText(text);

@@ -65,281 +65,281 @@ public class TimeSpanSelectorUITest {
     }
 
     @Test
-    public void testLinearPickerInflation() {
-        LinearTimeSpanSelector picker = new LinearTimeSpanSelector(context);
-        assertNotNull("LinearTimeSpanSelector should be inflatable", picker);
+    public void testLinearSelectorInflation() {
+        LinearTimeSpanSelector selector = new LinearTimeSpanSelector(context);
+        assertNotNull("LinearTimeSpanSelector should be inflatable", selector);
 
         // Default values from TimeSpanSelector.java
-        assertEquals("Default start time", 540, picker.getRangeStartInMinutes());
-        assertEquals("Default end time", 1020, picker.getRangeEndInMinutes());
+        assertEquals("Default start time", 540, selector.getSpanStartInMinutes());
+        assertEquals("Default end time", 1020, selector.getSpanEndInMinutes());
     }
 
     @Test
-    public void testCircularPickerInflation() {
-        CircularTimeSpanSelector picker = new CircularTimeSpanSelector(context);
-        assertNotNull("CircularTimeSpanSelector should be inflatable", picker);
+    public void testCircularSelectorInflation() {
+        CircularTimeSpanSelector selector = new CircularTimeSpanSelector(context);
+        assertNotNull("CircularTimeSpanSelector should be inflatable", selector);
 
-        assertEquals("Default start time", 540, picker.getRangeStartInMinutes());
-        assertEquals("Default end time", 1020, picker.getRangeEndInMinutes());
+        assertEquals("Default start time", 540, selector.getSpanStartInMinutes());
+        assertEquals("Default end time", 1020, selector.getSpanEndInMinutes());
     }
 
     @Test
     public void testProgrammaticSetters() {
-        CircularTimeSpanSelector picker = new CircularTimeSpanSelector(context);
-        picker.setThumbMinuteStep(1);
+        CircularTimeSpanSelector selector = new CircularTimeSpanSelector(context);
+        selector.setThumbMinuteStep(1);
 
-        picker.setRangeInMinutes(180, 300); // 03:00 to 05:00
+        selector.setSpanInMinutes(180, 300); // 03:00 to 05:00
 
-        assertEquals(180, picker.getRangeStartInMinutes());
-        assertEquals(300, picker.getRangeEndInMinutes());
-        assertEquals(120, picker.getDurationInMinutes());
-        assertFalse(picker.isOvernight());
+        assertEquals(180, selector.getSpanStartInMinutes());
+        assertEquals(300, selector.getSpanEndInMinutes());
+        assertEquals(120, selector.getDurationInMinutes());
+        assertFalse(selector.isOvernight());
     }
 
     @Test
     public void testStringAPI() {
-        LinearTimeSpanSelector picker = new LinearTimeSpanSelector(context);
+        LinearTimeSpanSelector selector = new LinearTimeSpanSelector(context);
 
-        picker.setRangeStartTime("10:00");
-        picker.setRangeEndTime("14:30");
+        selector.setSpanStartTime("10:00");
+        selector.setSpanEndTime("14:30");
 
-        assertEquals(600, picker.getRangeStartInMinutes());
-        assertEquals(870, picker.getRangeEndInMinutes());
+        assertEquals(600, selector.getSpanStartInMinutes());
+        assertEquals(870, selector.getSpanEndInMinutes());
 
-        picker.setRangeTime("08:00", "18:00");
-        assertEquals(480, picker.getRangeStartInMinutes());
-        assertEquals(1080, picker.getRangeEndInMinutes());
+        selector.setSpanTime("08:00", "18:00");
+        assertEquals(480, selector.getSpanStartInMinutes());
+        assertEquals(1080, selector.getSpanEndInMinutes());
     }
 
     @Test
     public void testDurationConstraints() {
-        CircularTimeSpanSelector picker = new CircularTimeSpanSelector(context);
-        picker.setThumbMinuteStep(1);
+        CircularTimeSpanSelector selector = new CircularTimeSpanSelector(context);
+        selector.setThumbMinuteStep(1);
 
-        picker.setMinDurationMinutes(60);
-        picker.setMaxDurationMinutes(120);
+        selector.setMinDurationMinutes(60);
+        selector.setMaxDurationMinutes(120);
 
-        assertEquals(60, picker.getMinDurationMinutes());
-        assertEquals(120, picker.getMaxDurationMinutes());
+        assertEquals(60, selector.getMinDurationMinutes());
+        assertEquals(120, selector.getMaxDurationMinutes());
 
-        // Setting range less than min should snap to min
-        picker.setRangeInMinutes(100, 110);
-        assertEquals(50, picker.getRangeStartInMinutes());
-        assertEquals(110, picker.getRangeEndInMinutes());
+        // Setting span less than min should snap to min
+        selector.setSpanInMinutes(100, 110);
+        assertEquals(50, selector.getSpanStartInMinutes());
+        assertEquals(110, selector.getSpanEndInMinutes());
     }
 
     @Test
     public void testStateRestoration() {
-        LinearTimeSpanSelector picker = new LinearTimeSpanSelector(context);
-        picker.setThumbMinuteStep(1);
-        picker.setRangeInMinutes(60, 180);
+        LinearTimeSpanSelector selector = new LinearTimeSpanSelector(context);
+        selector.setThumbMinuteStep(1);
+        selector.setSpanInMinutes(60, 180);
 
-        Parcelable state = picker.onSaveInstanceState();
+        Parcelable state = selector.onSaveInstanceState();
         assertNotNull("State should not be null", state);
 
-        LinearTimeSpanSelector newPicker = new LinearTimeSpanSelector(context);
-        newPicker.onRestoreInstanceState(state);
+        LinearTimeSpanSelector newSelector = new LinearTimeSpanSelector(context);
+        newSelector.onRestoreInstanceState(state);
 
-        assertEquals(60, newPicker.getRangeStartInMinutes());
-        assertEquals(180, newPicker.getRangeEndInMinutes());
+        assertEquals(60, newSelector.getSpanStartInMinutes());
+        assertEquals(180, newSelector.getSpanEndInMinutes());
     }
 
     @Test
     public void testVisualAttributes() {
-        CircularTimeSpanSelector picker = new CircularTimeSpanSelector(context);
+        CircularTimeSpanSelector selector = new CircularTimeSpanSelector(context);
 
-        picker.setAccentColor(Color.RED);
-        assertEquals(Color.RED, picker.getAccentColor());
-        assertEquals(Color.RED, picker.getRangeColor());
+        selector.setAccentColor(Color.RED);
+        assertEquals(Color.RED, selector.getAccentColor());
+        assertEquals(Color.RED, selector.getSpanColor());
 
-        picker.setTrackColor(Color.GRAY);
-        assertEquals(Color.GRAY, picker.getTrackColor());
+        selector.setTrackColor(Color.GRAY);
+        assertEquals(Color.GRAY, selector.getTrackColor());
 
-        picker.setTrackWidth(20f);
-        assertEquals(dp(20f), picker.getTrackWidth(), 0.01f);
+        selector.setTrackWidth(20f);
+        assertEquals(dp(20f), selector.getTrackWidth(), 0.01f);
 
-        picker.setThumbRadius(15f);
-        assertEquals(dp(15f), picker.getThumbRadius(), 0.01f);
+        selector.setThumbRadius(15f);
+        assertEquals(dp(15f), selector.getThumbRadius(), 0.01f);
 
-        picker.setRangeTextColor(Color.BLUE);
-        assertEquals(Color.BLUE, picker.getRangeTextColor());
+        selector.setSpanTextColor(Color.BLUE);
+        assertEquals(Color.BLUE, selector.getSpanTextColor());
 
-        picker.setTextColor(Color.YELLOW);
-        assertEquals(Color.YELLOW, picker.getRangeTextColor());
-        assertEquals(Color.YELLOW, picker.getTickLabelColor());
+        selector.setTextColor(Color.YELLOW);
+        assertEquals(Color.YELLOW, selector.getSpanTextColor());
+        assertEquals(Color.YELLOW, selector.getTickLabelColor());
     }
 
     @Test
     public void testThumbShadowAttributes() {
-        LinearTimeSpanSelector picker = new LinearTimeSpanSelector(context);
-        picker.setThumbShadowColor(Color.BLACK);
-        assertEquals(Color.BLACK, picker.getThumbShadowColor());
+        LinearTimeSpanSelector selector = new LinearTimeSpanSelector(context);
+        selector.setThumbShadowColor(Color.BLACK);
+        assertEquals(Color.BLACK, selector.getThumbShadowColor());
 
-        picker.setThumbShadowDx(5f);
-        assertEquals(dp(5f), picker.getThumbShadowDx(), 0.01f);
+        selector.setThumbShadowDx(5f);
+        assertEquals(dp(5f), selector.getThumbShadowDx(), 0.01f);
 
-        picker.setThumbShadowDy(5f);
-        assertEquals(dp(5f), picker.getThumbShadowDy(), 0.01f);
+        selector.setThumbShadowDy(5f);
+        assertEquals(dp(5f), selector.getThumbShadowDy(), 0.01f);
 
-        picker.setThumbElevation(10f);
-        assertEquals(dp(10f), picker.getThumbElevation(), 0.01f);
+        selector.setThumbElevation(10f);
+        assertEquals(dp(10f), selector.getThumbElevation(), 0.01f);
 
-        picker.setThumbShadow(2f, 2f, 8f, Color.DKGRAY);
-        assertEquals(Color.DKGRAY, picker.getThumbShadowColor());
+        selector.setThumbShadow(2f, 2f, 8f, Color.DKGRAY);
+        assertEquals(Color.DKGRAY, selector.getThumbShadowColor());
     }
 
     @Test
     public void testThumbDrawableAttributes() {
-        CircularTimeSpanSelector picker = new CircularTimeSpanSelector(context);
+        CircularTimeSpanSelector selector = new CircularTimeSpanSelector(context);
         Drawable d1 = new ColorDrawable(Color.RED);
         Drawable d2 = new ColorDrawable(Color.BLUE);
 
-        picker.setStartThumbDrawable(d1);
-        assertTrue(picker.isStartThumbDrawableSet());
-        assertEquals(d1, picker.getStartThumbDrawable());
+        selector.setStartThumbDrawable(d1);
+        assertTrue(selector.isStartThumbDrawableSet());
+        assertEquals(d1, selector.getStartThumbDrawable());
 
-        picker.setEndThumbDrawable(d2);
-        assertTrue(picker.isEndThumbDrawableSet());
-        assertEquals(d2, picker.getEndThumbDrawable());
+        selector.setEndThumbDrawable(d2);
+        assertTrue(selector.isEndThumbDrawableSet());
+        assertEquals(d2, selector.getEndThumbDrawable());
 
-        picker.setStartThumbDrawableTintColor(Color.GREEN);
-        assertEquals(Color.GREEN, picker.getStartThumbDrawableTintColor());
+        selector.setStartThumbDrawableTintColor(Color.GREEN);
+        assertEquals(Color.GREEN, selector.getStartThumbDrawableTintColor());
 
-        picker.setEndThumbDrawableTintColor(Color.CYAN);
-        assertEquals(Color.CYAN, picker.getEndThumbDrawableTintColor());
+        selector.setEndThumbDrawableTintColor(Color.CYAN);
+        assertEquals(Color.CYAN, selector.getEndThumbDrawableTintColor());
 
-        picker.setThumbDrawables(d2, d1);
-        assertEquals(d2, picker.getStartThumbDrawable());
-        assertEquals(d1, picker.getEndThumbDrawable());
+        selector.setThumbDrawables(d2, d1);
+        assertEquals(d2, selector.getStartThumbDrawable());
+        assertEquals(d1, selector.getEndThumbDrawable());
     }
 
     @Test
     public void testThumbHandleAttributes() {
-        LinearTimeSpanSelector picker = new LinearTimeSpanSelector(context);
-        picker.setThumbFillColor(Color.MAGENTA);
-        assertEquals(Color.MAGENTA, picker.getThumbFillColor());
+        LinearTimeSpanSelector selector = new LinearTimeSpanSelector(context);
+        selector.setThumbFillColor(Color.MAGENTA);
+        assertEquals(Color.MAGENTA, selector.getThumbFillColor());
 
-        picker.setThumbStrokeWidth(2f);
-        assertEquals(dp(2f), picker.getThumbStrokeWidth(), 0.01f);
+        selector.setThumbStrokeWidth(2f);
+        assertEquals(dp(2f), selector.getThumbStrokeWidth(), 0.01f);
 
-        picker.setThumbStrokeColor(Color.WHITE);
-        assertEquals(Color.WHITE, picker.getThumbStrokeColor());
+        selector.setThumbStrokeColor(Color.WHITE);
+        assertEquals(Color.WHITE, selector.getThumbStrokeColor());
 
-        picker.setThumbTouchRadiusPadding(10f);
-        assertEquals(dp(10f), picker.getThumbTouchRadiusPadding(), 0.01f);
+        selector.setThumbTouchRadiusPadding(10f);
+        assertEquals(dp(10f), selector.getThumbTouchRadiusPadding(), 0.01f);
     }
 
     @Test
     public void testTickAttributes() {
-        CircularTimeSpanSelector picker = new CircularTimeSpanSelector(context);
+        CircularTimeSpanSelector selector = new CircularTimeSpanSelector(context);
 
-        picker.setShowTicks(true);
-        assertTrue(picker.isShowTicks());
+        selector.setShowTicks(true);
+        assertTrue(selector.isShowTicks());
 
-        picker.setShowTickLabels(false);
-        assertFalse(picker.isShowTickLabels());
+        selector.setShowTickLabels(false);
+        assertFalse(selector.isShowTickLabels());
 
-        picker.setHourTickColor(Color.GREEN);
-        assertEquals(Color.GREEN, picker.getHourTickColor());
+        selector.setHourTickColor(Color.GREEN);
+        assertEquals(Color.GREEN, selector.getHourTickColor());
 
-        picker.setMinuteTickColor(Color.YELLOW);
-        assertEquals(Color.YELLOW, picker.getMinuteTickColor());
+        selector.setMinuteTickColor(Color.YELLOW);
+        assertEquals(Color.YELLOW, selector.getMinuteTickColor());
 
-        picker.setTickLabelSize(12f);
-        assertEquals(sp(12f), picker.getTickLabelSize(), 0.01f);
+        selector.setTickLabelSize(12f);
+        assertEquals(sp(12f), selector.getTickLabelSize(), 0.01f);
 
-        picker.setTickLabelStyle(Typeface.BOLD);
-        assertEquals(Typeface.BOLD, picker.getTickLabelStyle());
+        selector.setTickLabelStyle(Typeface.BOLD);
+        assertEquals(Typeface.BOLD, selector.getTickLabelStyle());
 
-        picker.setTickDistanceFromTrack(5f);
-        assertEquals(dp(5f), picker.getTickDistanceFromTrack(), 0.01f);
+        selector.setTickDistanceFromTrack(5f);
+        assertEquals(dp(5f), selector.getTickDistanceFromTrack(), 0.01f);
 
-        picker.setTickLabelDistanceFromTick(10f);
-        assertEquals(dp(10f), picker.getTickLabelDistanceFromTick(), 0.01f);
+        selector.setTickLabelDistanceFromTick(10f);
+        assertEquals(dp(10f), selector.getTickLabelDistanceFromTick(), 0.01f);
 
-        picker.setTickEdgeStyle(TimeSpanSelector.TickEdgeStyle.ROUND);
-        assertEquals(TimeSpanSelector.TickEdgeStyle.ROUND, picker.getTickEdgeStyle());
+        selector.setTickEdgeStyle(TimeSpanSelector.TickEdgeStyle.ROUND);
+        assertEquals(TimeSpanSelector.TickEdgeStyle.ROUND, selector.getTickEdgeStyle());
 
-        picker.setTickColors(Color.RED, Color.BLUE);
-        assertEquals(Color.RED, picker.getHourTickColor());
-        assertEquals(Color.BLUE, picker.getMinuteTickColor());
+        selector.setTickColors(Color.RED, Color.BLUE);
+        assertEquals(Color.RED, selector.getHourTickColor());
+        assertEquals(Color.BLUE, selector.getMinuteTickColor());
     }
 
     @Test
     public void testTickSizeAttributes() {
-        LinearTimeSpanSelector picker = new LinearTimeSpanSelector(context);
-        picker.setHourTickWidth(4f);
-        assertEquals(dp(4f), picker.getHourTickWidth(), 0.01f);
+        LinearTimeSpanSelector selector = new LinearTimeSpanSelector(context);
+        selector.setHourTickWidth(4f);
+        assertEquals(dp(4f), selector.getHourTickWidth(), 0.01f);
 
-        picker.setMinuteTickWidth(2f);
-        assertEquals(dp(2f), picker.getMinuteTickWidth(), 0.01f);
+        selector.setMinuteTickWidth(2f);
+        assertEquals(dp(2f), selector.getMinuteTickWidth(), 0.01f);
 
-        picker.setHourTickHeight(20f);
-        assertEquals(dp(20f), picker.getHourTickHeight(), 0.01f);
+        selector.setHourTickHeight(20f);
+        assertEquals(dp(20f), selector.getHourTickHeight(), 0.01f);
 
-        picker.setMinuteTickHeight(10f);
-        assertEquals(dp(10f), picker.getMinuteTickHeight(), 0.01f);
+        selector.setMinuteTickHeight(10f);
+        assertEquals(dp(10f), selector.getMinuteTickHeight(), 0.01f);
 
-        picker.setTicksWidth(6f, 3f);
-        assertEquals(dp(6f), picker.getHourTickWidth(), 0.01f);
-        assertEquals(dp(3f), picker.getMinuteTickWidth(), 0.01f);
+        selector.setTicksWidth(6f, 3f);
+        assertEquals(dp(6f), selector.getHourTickWidth(), 0.01f);
+        assertEquals(dp(3f), selector.getMinuteTickWidth(), 0.01f);
 
-        picker.setTicksHeight(30f, 15f);
-        assertEquals(dp(30f), picker.getHourTickHeight(), 0.01f);
-        assertEquals(dp(15f), picker.getMinuteTickHeight(), 0.01f);
+        selector.setTicksHeight(30f, 15f);
+        assertEquals(dp(30f), selector.getHourTickHeight(), 0.01f);
+        assertEquals(dp(15f), selector.getMinuteTickHeight(), 0.01f);
     }
 
     @Test
     public void testFormatAndVisibility() {
-        LinearTimeSpanSelector picker = new LinearTimeSpanSelector(context);
+        LinearTimeSpanSelector selector = new LinearTimeSpanSelector(context);
 
-        picker.set24HourFormat(false);
-        assertFalse(picker.is24HourFormat());
+        selector.set24HourFormat(false);
+        assertFalse(selector.is24HourFormat());
 
-        picker.showRangeText(false);
-        assertFalse(picker.isRangeTextShown());
+        selector.showSpanText(false);
+        assertFalse(selector.isSpanTextShown());
 
-        picker.showAmPmLabels(true);
-        assertTrue(picker.isAmPmLabelsShown());
+        selector.showAmPmLabels(true);
+        assertTrue(selector.isAmPmLabelsShown());
 
-        picker.setRangeTextFormat("From %1$s To %2$s");
-        assertEquals("From %1$s To %2$s", picker.getRangeTextFormat());
+        selector.setSpanTextFormat("From %1$s To %2$s");
+        assertEquals("From %1$s To %2$s", selector.getSpanTextFormat());
 
-        picker.setRangeTextPosition(TimeSpanSelector.RangeTextPosition.TOP);
-        assertEquals(TimeSpanSelector.RangeTextPosition.TOP, picker.getRangeTextPosition());
+        selector.setSpanTextPosition(TimeSpanSelector.SpanTextPosition.TOP);
+        assertEquals(TimeSpanSelector.SpanTextPosition.TOP, selector.getSpanTextPosition());
 
-        picker.setRangeTextSize(18f);
-        assertEquals(sp(18f), picker.getRangeTextSize(), 0.01f);
+        selector.setSpanTextSize(18f);
+        assertEquals(sp(18f), selector.getSpanTextSize(), 0.01f);
 
-        picker.setRangeTextStyle(Typeface.ITALIC);
-        assertEquals(Typeface.ITALIC, picker.getRangeTextStyle());
+        selector.setSpanTextStyle(Typeface.ITALIC);
+        assertEquals(Typeface.ITALIC, selector.getSpanTextStyle());
     }
 
     @Test
-    public void testOvernightRangeLogic() {
-        CircularTimeSpanSelector picker = new CircularTimeSpanSelector(context);
-        picker.setOvernightRangeAllowed(true);
-        assertTrue(picker.isOvernightRangeAllowed());
+    public void testOvernightSpanLogic() {
+        CircularTimeSpanSelector selector = new CircularTimeSpanSelector(context);
+        selector.setOvernightSpanAllowed(true);
+        assertTrue(selector.isOvernightSpanAllowed());
 
         // 10:00 PM (1320) to 02:00 AM (120)
-        picker.setRangeInMinutes(1320, 120);
-        assertTrue(picker.isOvernight());
-        assertEquals(1320, picker.getRangeStartInMinutes());
-        assertEquals(120, picker.getRangeEndInMinutes());
-        assertEquals(240, picker.getDurationInMinutes());
+        selector.setSpanInMinutes(1320, 120);
+        assertTrue(selector.isOvernight());
+        assertEquals(1320, selector.getSpanStartInMinutes());
+        assertEquals(120, selector.getSpanEndInMinutes());
+        assertEquals(240, selector.getDurationInMinutes());
     }
 
     @Test
     public void testListeners() {
-        LinearTimeSpanSelector picker = new LinearTimeSpanSelector(context);
-        picker.setThumbMinuteStep(1);
+        LinearTimeSpanSelector selector = new LinearTimeSpanSelector(context);
+        selector.setThumbMinuteStep(1);
 
         AtomicInteger startValue = new AtomicInteger(-1);
         AtomicInteger endValue = new AtomicInteger(-1);
 
-        picker.setOnRangeChangeListener(new TimeSpanSelector.OnRangeChangeListener() {
+        selector.setOnSpanChangeListener(new TimeSpanSelector.OnSpanChangeListener() {
             @Override
-            public void onRangeChanged(int startMinutes, int endMinutes, boolean isOvernight) {
+            public void onSpanChanged(int startMinutes, int endMinutes, boolean isOvernight) {
                 startValue.set(startMinutes);
                 endValue.set(endMinutes);
             }
@@ -349,13 +349,13 @@ public class TimeSpanSelectorUITest {
             }
         });
 
-        picker.setRangeInMinutes(100, 200);
+        selector.setSpanInMinutes(100, 200);
         assertEquals(100, startValue.get());
         assertEquals(200, endValue.get());
 
-        assertNotNull(picker.getOnRangeChangeListener());
+        assertNotNull(selector.getOnSpanChangeListener());
 
-        picker.setOnTimeChangeListener(new TimeSpanSelector.OnTimeChangeListener() {
+        selector.setOnTimeChangeListener(new TimeSpanSelector.OnTimeChangeListener() {
             @Override
             public void onStartTimeChange(int startTimeMinutes) {
             }
@@ -368,9 +368,9 @@ public class TimeSpanSelectorUITest {
             public void onDurationChange(int durationMinutes) {
             }
         });
-        assertNotNull(picker.getOnTimeChangeListener());
+        assertNotNull(selector.getOnTimeChangeListener());
 
-        picker.setOnDragChangeListener(new TimeSpanSelector.OnDragChangeListener() {
+        selector.setOnDragChangeListener(new TimeSpanSelector.OnDragChangeListener() {
             @Override
             public boolean onDragStart(@NonNull TimeSpanSelector.Thumb thumb) {
                 return true;
@@ -380,16 +380,16 @@ public class TimeSpanSelectorUITest {
             public void onDragStop(@NonNull TimeSpanSelector.Thumb thumb) {
             }
         });
-        assertNotNull(picker.getOnDragChangeListener());
+        assertNotNull(selector.getOnDragChangeListener());
     }
 
     @Test
     public void testBoundaryValues() {
-        CircularTimeSpanSelector picker = new CircularTimeSpanSelector(context);
-        picker.setThumbMinuteStep(1);
+        CircularTimeSpanSelector selector = new CircularTimeSpanSelector(context);
+        selector.setThumbMinuteStep(1);
 
-        picker.setRangeInMinutes(0, 1439);
-        assertEquals(0, picker.getRangeStartInMinutes());
-        assertEquals(1439, picker.getRangeEndInMinutes());
+        selector.setSpanInMinutes(0, 1439);
+        assertEquals(0, selector.getSpanStartInMinutes());
+        assertEquals(1439, selector.getSpanEndInMinutes());
     }
 }

@@ -31,7 +31,7 @@ if (secretPropsFile.exists()) {
 
 val libGroupID = "io.github.ervivekumrao"
 val libArtifactID = "time-span-selector"
-val libVersion = "0.0.3-alpha"
+val libVersion = "0.0.6-alpha"
 
 android {
     namespace = "vivek.umrao.time.span.selector"
@@ -51,8 +51,6 @@ android {
                 "proguard-rules.pro"
             )
         }
-        create("github") {
-        }
     }
 
     compileOptions {
@@ -65,17 +63,10 @@ android {
             isIncludeAndroidResources = true
         }
     }
-
-    publishing {
-        singleVariant("github") {
-            withSourcesJar()
-            withJavadocJar()
-        }
-    }
 }
 
 // Configuration for Vanniktech Maven Publish Plugin
-// This plugin handles Maven Central publishing and signing automatically
+// Credentials, Host (S01), and signing are configured via gradle.properties.
 mavenPublishing {
     coordinates(libGroupID, libArtifactID, libVersion)
 
@@ -104,18 +95,9 @@ mavenPublishing {
     }
 }
 
-// GitHub Packages (as an additional repository)
+// Add GitHub Packages as an additional repository.
+// The Vanniktech plugin creates a publication named "maven" by default.
 publishing {
-    publications {
-        register<MavenPublication>("release") {
-            afterEvaluate {
-                from(components["github"])
-            }
-            groupId = libGroupID
-            artifactId = libArtifactID
-            version = libVersion
-        }
-    }
     repositories {
         if (secretProps.containsKey("GIT_TSS_USER")) {
             maven {
@@ -128,6 +110,14 @@ publishing {
             }
         }
     }
+}
+
+// Unified task to publish to both destinations in one command.
+tasks.register("publishToAll") {
+    description = "Publishes the library to both Maven Central and GitHub Packages."
+    group = "publishing"
+    dependsOn("publishToMavenCentral")
+    dependsOn("publishMavenPublicationToGitHubPackagesRepository")
 }
 
 dependencies {

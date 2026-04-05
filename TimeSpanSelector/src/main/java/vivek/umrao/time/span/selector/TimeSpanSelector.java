@@ -29,66 +29,72 @@ import androidx.annotation.Nullable;
  */
 public interface TimeSpanSelector {
 
-    /** Total minutes in a 24-hour day. */
+    /**
+     * Total minutes in a 24-hour day.
+     */
     int MINUTES_IN_DAY = 24 * 60;
-    
-    /** Default start time (09:00). */
+
+    /**
+     * Default start time (09:00).
+     */
     int DEFAULT_START_MINUTES = 9 * 60;
-    
-    /** Default end time (17:00). */
+
+    /**
+     * Default end time (17:00).
+     */
     int DEFAULT_END_MINUTES = 17 * 60;
-    
-    /** Default snap interval. */
+
+    /**
+     * Default snap interval.
+     */
     int DEFAULT_THUMB_MINUTE_STEP = 15;
 
-    /** Default display format for the range text. */
-    String DEFAULT_RANGE_TEXT_FORMAT = "%1$s\n%2$s";
+    /**
+     * Default display format for the span text.
+     */
+    String DEFAULT_SPAN_TEXT_FORMAT = "%1$s\n%2$s";
 
     @ColorInt
-    int DEFAULT_ACCENT_COLOR = Color.BLUE;
+    int DEFAULT_TRACK_COLOR = Color.DKGRAY;
     @ColorInt
-    int DEFAULT_TEXT_COLOR = Color.BLACK;
+    int DEFAULT_SPAN_COLOR = Color.YELLOW;
     @ColorInt
-    int DEFAULT_TRACK_COLOR = Color.LTGRAY;
+    int DEFAULT_SPAN_TEXT_COLOR = Color.BLACK;
     @ColorInt
-    int DEFAULT_RANGE_COLOR = Color.BLUE;
+    int DEFAULT_THUMB_FILL_COLOR = Color.YELLOW;
     @ColorInt
-    int DEFAULT_RANGE_TEXT_COLOR = Color.BLACK;
+    int DEFAULT_THUMB_STROKE_COLOR = Color.DKGRAY;
     @ColorInt
-    int DEFAULT_THUMB_FILL_COLOR = Color.BLUE;
+    int DEFAULT_THUMB_SHADOW_COLOR = Color.BLACK;
     @ColorInt
-    int DEFAULT_THUMB_STROKE_COLOR = Color.GRAY;
+    int DEFAULT_THUMB_DRAWABLE_TINT_COLOR = Color.BLACK;
     @ColorInt
-    int DEFAULT_THUMB_SHADOW_COLOR = Color.GRAY;
-    @ColorInt
-    int DEFAULT_THUMB_DRAWABLE_TINT_COLOR = Color.DKGRAY;
-    @ColorInt
-    int DEFAULT_TICK_COLOR = Color.DKGRAY;
+    int DEFAULT_TICK_COLOR = Color.BLACK;
     @ColorInt
     int DEFAULT_TICK_LABEL_COLOR = Color.BLACK;
 
-    enum RangeTextPosition {TOP, BOTTOM, CENTER}
+    enum SpanTextPosition {TOP, BOTTOM, CENTER}
 
     enum TickEdgeStyle {ROUND, BUTT}
 
-    enum Thumb {START, END, RANGE, NONE}
+    enum Thumb {START, END, NONE}
 
-    interface OnRangeChangeListener {
+    interface OnSpanChangeListener {
         /**
-         * Called when the selected time range changes.
+         * Called when the selected time span changes.
          *
          * @param startMinutes The start time in total minutes from midnight (0-1439).
          * @param endMinutes   The end time in total minutes from midnight (0-1439).
-         * @param isOvernight  True if the range spans across midnight.
+         * @param isOvernight  True if the span spans across midnight.
          */
-        void onRangeChanged(int startMinutes, int endMinutes, boolean isOvernight);
+        void onSpanChanged(int startMinutes, int endMinutes, boolean isOvernight);
 
         /**
-         * Called when the user finishes interacting with the picker.
+         * Called when the user finishes interacting with the selector.
          *
          * @param startMinutes The start time in total minutes from midnight.
          * @param endMinutes   The end time in total minutes from midnight.
-         * @param isOvernight  True if the range spans across midnight.
+         * @param isOvernight  True if the span spans across midnight.
          */
         void onInteractionFinished(int startMinutes, int endMinutes, boolean isOvernight);
     }
@@ -112,7 +118,7 @@ public interface TimeSpanSelector {
         void onEndTimeChange(int endTimeMinutes);
 
         /**
-         * Called when the duration of the range changes.
+         * Called when the duration of the span changes.
          *
          * @param durationMinutes The new duration in minutes.
          */
@@ -126,7 +132,7 @@ public interface TimeSpanSelector {
         /**
          * Called when the user starts dragging a thumb.
          *
-         * @param thumb The thumb being dragged (START, END, or RANGE).
+         * @param thumb The thumb being dragged (START, END, or SPAN).
          * @return True to allow the drag, false to disallow it.
          */
         boolean onDragStart(@NonNull Thumb thumb);
@@ -140,19 +146,19 @@ public interface TimeSpanSelector {
     }
 
     /**
-     * Set the listener to be notified when the time range changes.
+     * Set the listener to be notified when the time span changes.
      *
      * @param listener The listener to set.
      */
-    void setOnRangeChangeListener(@NonNull OnRangeChangeListener listener);
+    void setOnSpanChangeListener(@NonNull OnSpanChangeListener listener);
 
     /**
-     * Get the current range change listener.
+     * Get the current span change listener.
      *
      * @return The current listener or null if not set.
      */
     @Nullable
-    OnRangeChangeListener getOnRangeChangeListener();
+    OnSpanChangeListener getOnSpanChangeListener();
 
     /**
      * Set the listener for granular time and duration changes.
@@ -185,40 +191,40 @@ public interface TimeSpanSelector {
     OnDragChangeListener getOnDragChangeListener();
 
     /**
-     * Get the start time of the range in minutes from midnight (0-1439).
+     * Get the start time of the span in minutes from midnight (0-1439).
      *
      * @return Start time in minutes.
      */
-    int getRangeStartInMinutes();
+    int getSpanStartInMinutes();
 
     /**
-     * Set the start time of the range in minutes from midnight (0-1439).
+     * Set the start time of the span in minutes from midnight (0-1439).
      *
      * @param startMinutes Start time in minutes.
      */
-    void setRangeStartInMinutes(int startMinutes);
+    void setSpanStartInMinutes(int startMinutes);
 
     /**
-     * Get the end time of the range in minutes from midnight (0-1439).
+     * Get the end time of the span in minutes from midnight (0-1439).
      *
      * @return End time in minutes.
      */
-    int getRangeEndInMinutes();
+    int getSpanEndInMinutes();
 
     /**
-     * Set the end time of the range in minutes from midnight (0-1439).
+     * Set the end time of the span in minutes from midnight (0-1439).
      *
      * @param endMinutes End time in minutes.
      */
-    void setRangeEndInMinutes(int endMinutes);
+    void setSpanEndInMinutes(int endMinutes);
 
     /**
-     * Set both start and end times of the range in minutes from midnight.
+     * Set both start and end times of the span in minutes from midnight.
      *
      * @param startMinutes Start time in minutes.
      * @param endMinutes   End time in minutes.
      */
-    void setRangeInMinutes(int startMinutes, int endMinutes);
+    void setSpanInMinutes(int startMinutes, int endMinutes);
 
     /**
      * Set the start time using a string format (e.g., "HH:mm" or "h:mm a").
@@ -226,7 +232,7 @@ public interface TimeSpanSelector {
      * @param timeString The time string to parse.
      * @throws IllegalArgumentException If the format is invalid.
      */
-    void setRangeStartTime(String timeString) throws IllegalArgumentException;
+    void setSpanStartTime(String timeString) throws IllegalArgumentException;
 
     /**
      * Set the end time using a string format (e.g., "HH:mm" or "h:mm a").
@@ -234,7 +240,7 @@ public interface TimeSpanSelector {
      * @param timeString The time string to parse.
      * @throws IllegalArgumentException If the format is invalid.
      */
-    void setRangeEndTime(String timeString) throws IllegalArgumentException;
+    void setSpanEndTime(String timeString) throws IllegalArgumentException;
 
     /**
      * Set both start and end times using string formats.
@@ -243,10 +249,10 @@ public interface TimeSpanSelector {
      * @param end   The end time string.
      * @throws IllegalArgumentException If either format is invalid.
      */
-    void setRangeTime(String start, String end) throws IllegalArgumentException;
+    void setSpanTime(String start, String end) throws IllegalArgumentException;
 
     /**
-     * Get the total duration of the selected range in minutes.
+     * Get the total duration of the selected span in minutes.
      *
      * @return Duration in minutes.
      */
@@ -281,25 +287,25 @@ public interface TimeSpanSelector {
     void setMaxDurationMinutes(int minutes);
 
     /**
-     * Check if the current range spans across midnight (e.g., 10 PM to 2 AM).
+     * Check if the current span spans across midnight (e.g., 10 PM to 2 AM).
      *
-     * @return True if the range is overnight.
+     * @return True if the span is overnight.
      */
     boolean isOvernight();
 
     /**
-     * Check if ranges spanning across midnight are allowed.
+     * Check if span spanning across midnight are allowed.
      *
      * @return True if allowed.
      */
-    boolean isOvernightRangeAllowed();
+    boolean isOvernightSpanAllowed();
 
     /**
-     * Enable or disable ranges spanning across midnight.
+     * Enable or disable spans spanning across midnight.
      *
-     * @param allowed True to allow overnight ranges.
+     * @param allowed True to allow overnight spans.
      */
-    void setOvernightRangeAllowed(boolean allowed);
+    void setOvernightSpanAllowed(boolean allowed);
 
     /**
      * Get the snap interval in minutes for the thumbs.
@@ -316,7 +322,7 @@ public interface TimeSpanSelector {
     void setThumbMinuteStep(int thumbMinuteStep);
 
     /**
-     * Set the accent color, which typically updates both range and thumb colors.
+     * Set the accent color, which typically updates both span and thumb colors.
      *
      * @param color The accent color.
      */
@@ -346,113 +352,113 @@ public interface TimeSpanSelector {
     int getTrackColor();
 
     /**
-     * Sets the text color for both the range summary text and the tick labels.
-     * Shortcut for calling {@link #setRangeTextColor(int)} and {@link #setTickLabelColor(int)}.
+     * Sets the text color for both the span summary text and the tick labels.
+     * Shortcut for calling {@link #setSpanTextColor(int)} and {@link #setTickLabelColor(int)}.
      *
      * @param color The color to set.
      */
     void setTextColor(@ColorInt int color);
 
     /**
-     * Check if the range summary text is currently being displayed.
+     * Check if the span summary text is currently being displayed.
      *
      * @return True if shown.
      */
-    boolean isRangeTextShown();
+    boolean isSpanTextShown();
 
     /**
-     * Toggle the visibility of the range summary text.
+     * Toggle the visibility of the span summary text.
      *
-     * @param showRangeText True to show, false to hide.
+     * @param showSpanText True to show, false to hide.
      */
-    void showRangeText(boolean showRangeText);
+    void showSpanText(boolean showSpanText);
 
     /**
-     * Set the color of the range summary text.
+     * Set the color of the span summary text.
      *
      * @param color The text color.
      */
-    void setRangeTextColor(@ColorInt int color);
+    void setSpanTextColor(@ColorInt int color);
 
     /**
-     * Get the color of the range summary text.
+     * Get the color of the span summary text.
      *
      * @return The text color.
      */
     @ColorInt
-    int getRangeTextColor();
+    int getSpanTextColor();
 
     /**
-     * Set the size of the range summary text.
+     * Set the size of the span summary text.
      *
      * @param size Size in SP.
      */
-    void setRangeTextSize(float size);
+    void setSpanTextSize(float size);
 
     /**
-     * Get the size of the range summary text.
+     * Get the size of the span summary text.
      *
      * @return Size in SP.
      */
-    float getRangeTextSize();
+    float getSpanTextSize();
 
     /**
-     * Set the typeface style for the range summary text (e.g., Typeface.BOLD).
+     * Set the typeface style for the span summary text (e.g., Typeface.BOLD).
      *
      * @param style The typeface style.
      */
-    void setRangeTextStyle(int style);
+    void setSpanTextStyle(int style);
 
     /**
-     * Get the typeface style of the range summary text.
+     * Get the typeface style of the span summary text.
      *
      * @return The typeface style.
      */
-    int getRangeTextStyle();
+    int getSpanTextStyle();
 
     /**
-     * Set the format string for the range summary text (e.g., "%1$s to %2$s").
+     * Set the format string for the span summary text (e.g., "%1$s to %2$s").
      *
      * @param format The format string.
      */
-    void setRangeTextFormat(String format);
+    void setSpanTextFormat(String format);
 
     /**
-     * Get the current format string for the range summary text.
+     * Get the current format string for the span summary text.
      *
      * @return The format string.
      */
-    String getRangeTextFormat();
+    String getSpanTextFormat();
 
     /**
-     * Set the relative position of the range summary text (TOP, BOTTOM, CENTER).
+     * Set the relative position of the span summary text (TOP, BOTTOM, CENTER).
      *
      * @param position The position to set.
      */
-    void setRangeTextPosition(@NonNull RangeTextPosition position);
+    void setSpanTextPosition(@NonNull SpanTextPosition position);
 
     /**
-     * Get the current relative position of the range summary text.
+     * Get the current relative position of the span summary text.
      *
      * @return The current position.
      */
     @NonNull
-    RangeTextPosition getRangeTextPosition();
+    SpanTextPosition getSpanTextPosition();
 
     /**
-     * Set the color of the active range track.
+     * Set the color of the active span track.
      *
-     * @param color The range color.
+     * @param color The span color.
      */
-    void setRangeColor(@ColorInt int color);
+    void setSpanColor(@ColorInt int color);
 
     /**
-     * Get the color of the active range track.
+     * Get the color of the active span track.
      *
-     * @return The range color.
+     * @return The span color.
      */
     @ColorInt
-    int getRangeColor();
+    int getSpanColor();
 
     /**
      * Set the color of the thumb shadow.
@@ -950,7 +956,7 @@ public interface TimeSpanSelector {
     float getTrackWidth();
 
     /**
-     * Check if the picker is currently using 24-hour format.
+     * Check if the selector is currently using 24-hour format.
      *
      * @return True if 24-hour format.
      */

@@ -17,7 +17,6 @@
 package vivek.umrao.time.span.selector;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -43,16 +42,16 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     private static final String KEY_START_MINUTES = "start_minutes";
     private static final String KEY_END_MINUTES = "end_minutes";
 
-    protected OnRangeChangeListener listener;
+    protected OnSpanChangeListener spanChangeListener;
     protected OnTimeChangeListener timeChangeListener;
     protected OnDragChangeListener dragChangeListener;
 
     protected boolean showTicks = true;
     protected boolean showTickLabels = true;
     protected boolean showAmPmLabels = false;
-    protected boolean isRangeTextShown = true;
+    protected boolean isSpanTextShown = true;
     protected boolean is24HourFormat = true;
-    protected boolean isOvernightRangeAllowed = true;
+    protected boolean isOvernightSpanAllowed = true;
 
     protected int currentStartMinutes = DEFAULT_START_MINUTES;
     protected int currentEndMinutes = DEFAULT_END_MINUTES;
@@ -61,17 +60,28 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     protected int minDurationMinutes = 0;
     protected int maxDurationMinutes = MINUTES_IN_DAY;
 
-    @ColorInt protected int trackColor;
-    @ColorInt protected int rangeColor;
-    @ColorInt protected int rangeTextColor;
-    @ColorInt protected int thumbFillColor;
-    @ColorInt protected int thumbStrokeColor;
-    @ColorInt protected int thumbShadowColor;
-    @ColorInt protected int startThumbDrawableTintColor;
-    @ColorInt protected int endThumbDrawableTintColor;
-    @ColorInt protected int hourTickColor;
-    @ColorInt protected int minuteTickColor;
-    @ColorInt protected int tickLabelColor;
+    @ColorInt
+    protected int trackColor;
+    @ColorInt
+    protected int spanColor;
+    @ColorInt
+    protected int spanTextColor;
+    @ColorInt
+    protected int thumbFillColor;
+    @ColorInt
+    protected int thumbStrokeColor;
+    @ColorInt
+    protected int thumbShadowColor;
+    @ColorInt
+    protected int startThumbDrawableTintColor;
+    @ColorInt
+    protected int endThumbDrawableTintColor;
+    @ColorInt
+    protected int hourTickColor;
+    @ColorInt
+    protected int minuteTickColor;
+    @ColorInt
+    protected int tickLabelColor;
 
     protected float trackWidth;
     protected float thumbRadius;
@@ -87,16 +97,18 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     protected float tickLabelSize;
     protected float tickDistanceFromTrack;
     protected float tickLabelDistanceFromTick;
-    protected float rangeTextSize;
+    protected float spanTextSize;
 
     protected int tickLabelStyle = Typeface.NORMAL;
-    protected int rangeTextStyle = Typeface.NORMAL;
-    protected String rangeTextFormat = DEFAULT_RANGE_TEXT_FORMAT;
-    protected RangeTextPosition rangeTextPosition = RangeTextPosition.BOTTOM;
+    protected int spanTextStyle = Typeface.NORMAL;
+    protected String spanTextFormat = DEFAULT_SPAN_TEXT_FORMAT;
+    protected SpanTextPosition spanTextPosition = SpanTextPosition.BOTTOM;
     protected TickEdgeStyle tickEdgeStyle = TickEdgeStyle.BUTT;
 
-    @Nullable protected Drawable startThumbDrawable;
-    @Nullable protected Drawable endThumbDrawable;
+    @Nullable
+    protected Drawable startThumbDrawable;
+    @Nullable
+    protected Drawable endThumbDrawable;
 
     public BaseTimeSpanSelector(Context context) {
         super(context);
@@ -114,17 +126,17 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
      * Initializes default colors from resources and theme.
      */
     protected void initializeDefaultColors() {
-        trackColor = MaterialColors.getColor(this, android.R.attr.textColorSecondaryNoDisable, Color.DKGRAY);
-        rangeColor = MaterialColors.getColor(this, android.R.attr.colorPrimary, Color.YELLOW);
-        rangeTextColor = MaterialColors.getColor(this, android.R.attr.textColorPrimary, Color.BLACK);
-        thumbFillColor = rangeColor;
-        thumbStrokeColor = MaterialColors.getColor(this, android.R.attr.strokeColor, Color.DKGRAY);
-        thumbShadowColor = MaterialColors.getColor(this, android.R.attr.shadowColor, Color.BLACK);
-        startThumbDrawableTintColor = MaterialColors.getColor(this, android.R.attr.thumbTint, Color.BLACK);
-        endThumbDrawableTintColor = startThumbDrawableTintColor;
-        hourTickColor = rangeTextColor;
-        minuteTickColor = rangeTextColor;
-        tickLabelColor = rangeTextColor;
+        trackColor = MaterialColors.getColor(this, android.R.attr.textColorSecondaryNoDisable, DEFAULT_TRACK_COLOR);
+        spanColor = MaterialColors.getColor(this, android.R.attr.colorPrimary, DEFAULT_SPAN_COLOR);
+        spanTextColor = MaterialColors.getColor(this, android.R.attr.textColorPrimary, DEFAULT_SPAN_TEXT_COLOR);
+        thumbFillColor = MaterialColors.getColor(this, android.R.attr.colorPrimary, DEFAULT_THUMB_FILL_COLOR);
+        thumbStrokeColor = MaterialColors.getColor(this, android.R.attr.strokeColor, DEFAULT_THUMB_STROKE_COLOR);
+        thumbShadowColor = MaterialColors.getColor(this, android.R.attr.shadowColor, DEFAULT_THUMB_SHADOW_COLOR);
+        startThumbDrawableTintColor = MaterialColors.getColor(this, android.R.attr.thumbTint, DEFAULT_THUMB_DRAWABLE_TINT_COLOR);
+        endThumbDrawableTintColor = MaterialColors.getColor(this, android.R.attr.thumbTint, DEFAULT_THUMB_DRAWABLE_TINT_COLOR);
+        hourTickColor = MaterialColors.getColor(this, android.R.attr.textColorPrimary, DEFAULT_TICK_COLOR);
+        minuteTickColor = MaterialColors.getColor(this, android.R.attr.textColorPrimary, DEFAULT_TICK_COLOR);
+        tickLabelColor = MaterialColors.getColor(this, android.R.attr.textColorPrimary, DEFAULT_TICK_LABEL_COLOR);
     }
 
     /**
@@ -148,24 +160,24 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     }
 
     /**
-     * Set the listener to be notified when the time range changes.
+     * Set the listener to be notified when the time span changes.
      *
      * @param listener The listener to set.
      */
     @Override
-    public void setOnRangeChangeListener(@NonNull OnRangeChangeListener listener) {
-        this.listener = listener;
+    public void setOnSpanChangeListener(@NonNull OnSpanChangeListener listener) {
+        this.spanChangeListener = listener;
     }
 
     /**
-     * Get the current range change listener.
+     * Get the current span change listener.
      *
      * @return The current listener or null if not set.
      */
     @Override
     @Nullable
-    public OnRangeChangeListener getOnRangeChangeListener() {
-        return listener;
+    public OnSpanChangeListener getOnSpanChangeListener() {
+        return spanChangeListener;
     }
 
     /**
@@ -211,70 +223,70 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     }
 
     /**
-     * Get the start time of the range in minutes from midnight (0-1439).
+     * Get the start time of the span in minutes from midnight (0-1439).
      *
      * @return Start time in minutes.
      */
     @Override
-    public int getRangeStartInMinutes() {
+    public int getSpanStartInMinutes() {
         return currentStartMinutes;
     }
 
     /**
-     * Set the start time of the range in minutes from midnight (0-1439).
+     * Set the start time of the span in minutes from midnight (0-1439).
      *
      * @param startMinutes Start time in minutes.
      */
     @Override
-    public void setRangeStartInMinutes(int startMinutes) {
-        updateRange(TimeUtils.snapToStep(startMinutes, thumbMinuteStep), currentEndMinutes, true);
+    public void setSpanStartInMinutes(int startMinutes) {
+        updateSpan(TimeUtils.snapToStep(startMinutes, thumbMinuteStep), currentEndMinutes, true);
     }
 
     /**
-     * Get the end time of the range in minutes from midnight (0-1439).
+     * Get the end time of the span in minutes from midnight (0-1439).
      *
      * @return End time in minutes.
      */
     @Override
-    public int getRangeEndInMinutes() {
+    public int getSpanEndInMinutes() {
         return currentEndMinutes;
     }
 
     /**
-     * Set the end time of the range in minutes from midnight (0-1439).
+     * Set the end time of the span in minutes from midnight (0-1439).
      *
      * @param endMinutes End time in minutes.
      */
     @Override
-    public void setRangeEndInMinutes(int endMinutes) {
-        updateRange(currentStartMinutes, TimeUtils.snapToStep(endMinutes, thumbMinuteStep), false);
+    public void setSpanEndInMinutes(int endMinutes) {
+        updateSpan(currentStartMinutes, TimeUtils.snapToStep(endMinutes, thumbMinuteStep), false);
     }
 
     /**
-     * Set both start and end times of the range in minutes from midnight.
+     * Set both start and end times of the span in minutes from midnight.
      *
      * @param startMinutes Start time in minutes.
      * @param endMinutes   End time in minutes.
      */
     @Override
-    public void setRangeInMinutes(int startMinutes, int endMinutes) {
-        updateRange(TimeUtils.snapToStep(startMinutes, thumbMinuteStep), TimeUtils.snapToStep(endMinutes, thumbMinuteStep), true);
+    public void setSpanInMinutes(int startMinutes, int endMinutes) {
+        updateSpan(TimeUtils.snapToStep(startMinutes, thumbMinuteStep), TimeUtils.snapToStep(endMinutes, thumbMinuteStep), true);
     }
 
     /**
-     * Updates the internal range state, enforcing duration constraints and optional overnight rules.
+     * Updates the internal span state, enforcing duration constraints and optional overnight rules.
      *
      * @param newStart    Proposed start time in minutes.
      * @param newEnd      Proposed end time in minutes.
      * @param movingStart True if the start thumb was moved, false if the end thumb.
      */
-    protected void updateRange(int newStart, int newEnd, boolean movingStart) {
+    protected void updateSpan(int newStart, int newEnd, boolean movingStart) {
         newStart = (newStart % MINUTES_IN_DAY + MINUTES_IN_DAY) % MINUTES_IN_DAY;
         newEnd = (newEnd % MINUTES_IN_DAY + MINUTES_IN_DAY) % MINUTES_IN_DAY;
 
         int duration = calculateDuration(newStart, newEnd);
 
-        if (!isOvernightRangeAllowed && newEnd < newStart) {
+        if (!isOvernightSpanAllowed && newEnd < newStart) {
             if (movingStart) {
                 newStart = newEnd;
             } else {
@@ -305,7 +317,7 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
             this.currentStartMinutes = newStart;
             this.currentEndMinutes = newEnd;
             invalidate();
-            notifyRangeChanged(false);
+            notifySpanChanged(false);
 
             if (timeChangeListener != null) {
                 if (startChanged) {
@@ -340,8 +352,8 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
      * @throws IllegalArgumentException If the format is invalid.
      */
     @Override
-    public void setRangeStartTime(String timeString) throws IllegalArgumentException {
-        setRangeStartInMinutes(TimeUtils.convertTimeToMinutes(timeString));
+    public void setSpanStartTime(String timeString) throws IllegalArgumentException {
+        setSpanStartInMinutes(TimeUtils.convertTimeToMinutes(timeString));
     }
 
     /**
@@ -351,8 +363,8 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
      * @throws IllegalArgumentException If the format is invalid.
      */
     @Override
-    public void setRangeEndTime(String timeString) throws IllegalArgumentException {
-        setRangeEndInMinutes(TimeUtils.convertTimeToMinutes(timeString));
+    public void setSpanEndTime(String timeString) throws IllegalArgumentException {
+        setSpanEndInMinutes(TimeUtils.convertTimeToMinutes(timeString));
     }
 
     /**
@@ -363,12 +375,12 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
      * @throws IllegalArgumentException If either format is invalid.
      */
     @Override
-    public void setRangeTime(String start, String end) throws IllegalArgumentException {
-        setRangeInMinutes(TimeUtils.convertTimeToMinutes(start), TimeUtils.convertTimeToMinutes(end));
+    public void setSpanTime(String start, String end) throws IllegalArgumentException {
+        setSpanInMinutes(TimeUtils.convertTimeToMinutes(start), TimeUtils.convertTimeToMinutes(end));
     }
 
     /**
-     * Get the total duration of the selected range in minutes.
+     * Get the total duration of the selected span in minutes.
      *
      * @return Duration in minutes.
      */
@@ -383,7 +395,9 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
      * @return Minimum duration.
      */
     @Override
-    public int getMinDurationMinutes() { return minDurationMinutes; }
+    public int getMinDurationMinutes() {
+        return minDurationMinutes;
+    }
 
     /**
      * Set the minimum allowed duration in minutes.
@@ -393,7 +407,7 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     @Override
     public void setMinDurationMinutes(int minutes) {
         this.minDurationMinutes = Math.max(0, minutes);
-        setRangeInMinutes(currentStartMinutes, currentEndMinutes);
+        setSpanInMinutes(currentStartMinutes, currentEndMinutes);
     }
 
     /**
@@ -402,7 +416,9 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
      * @return Maximum duration.
      */
     @Override
-    public int getMaxDurationMinutes() { return maxDurationMinutes; }
+    public int getMaxDurationMinutes() {
+        return maxDurationMinutes;
+    }
 
     /**
      * Set the maximum allowed duration in minutes.
@@ -412,13 +428,13 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     @Override
     public void setMaxDurationMinutes(int minutes) {
         this.maxDurationMinutes = Math.min(MINUTES_IN_DAY, minutes);
-        setRangeInMinutes(currentStartMinutes, currentEndMinutes);
+        setSpanInMinutes(currentStartMinutes, currentEndMinutes);
     }
 
     /**
-     * Check if the current range spans across midnight (e.g., 10 PM to 2 AM).
+     * Check if the current span spans across midnight (e.g., 10 PM to 2 AM).
      *
-     * @return True if the range is overnight.
+     * @return True if the span is overnight.
      */
     @Override
     public boolean isOvernight() {
@@ -426,23 +442,23 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     }
 
     /**
-     * Check if ranges spanning across midnight are allowed.
+     * Check if span spanning across midnight are allowed.
      *
      * @return True if allowed.
      */
     @Override
-    public boolean isOvernightRangeAllowed() {
-        return isOvernightRangeAllowed;
+    public boolean isOvernightSpanAllowed() {
+        return isOvernightSpanAllowed;
     }
 
     /**
-     * Enable or disable ranges spanning across midnight.
+     * Enable or disable spans spanning across midnight.
      *
-     * @param allowed True to allow overnight ranges.
+     * @param allowed True to allow overnight spans.
      */
     @Override
-    public void setOvernightRangeAllowed(boolean allowed) {
-        this.isOvernightRangeAllowed = allowed;
+    public void setOvernightSpanAllowed(boolean allowed) {
+        this.isOvernightSpanAllowed = allowed;
         if (!allowed && isOvernight()) {
             currentEndMinutes = currentStartMinutes;
         }
@@ -467,17 +483,17 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     @Override
     public void setThumbMinuteStep(int thumbMinuteStep) {
         this.thumbMinuteStep = Math.max(1, thumbMinuteStep);
-        setRangeInMinutes(currentStartMinutes, currentEndMinutes);
+        setSpanInMinutes(currentStartMinutes, currentEndMinutes);
     }
 
     /**
-     * Set the accent color, which typically updates both range and thumb colors.
+     * Set the accent color, which typically updates both span and thumb colors.
      *
      * @param color The accent color.
      */
     @Override
     public void setAccentColor(@ColorInt int color) {
-        this.rangeColor = color;
+        this.spanColor = color;
         this.thumbFillColor = color;
         invalidate();
     }
@@ -490,7 +506,7 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     @Override
     @ColorInt
     public int getAccentColor() {
-        return rangeColor;
+        return spanColor;
     }
 
     /**
@@ -516,169 +532,169 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     }
 
     /**
-     * Sets the text color for both the range summary text and the tick labels.
-     * Shortcut for calling {@link #setRangeTextColor(int)} and {@link #setTickLabelColor(int)}.
+     * Sets the text color for both the span summary text and the tick labels.
+     * Shortcut for calling {@link #setSpanTextColor(int)} and {@link #setTickLabelColor(int)}.
      *
      * @param color The color to set.
      */
     @Override
     public void setTextColor(@ColorInt int color) {
-        setRangeTextColor(color);
+        setSpanTextColor(color);
         setTickLabelColor(color);
     }
 
     /**
-     * Check if the range summary text is currently being displayed.
+     * Check if the span summary text is currently being displayed.
      *
      * @return True if shown.
      */
     @Override
-    public boolean isRangeTextShown() {
-        return isRangeTextShown;
+    public boolean isSpanTextShown() {
+        return isSpanTextShown;
     }
 
     /**
-     * Toggle the visibility of the range summary text.
+     * Toggle the visibility of the span summary text.
      *
-     * @param showRangeText True to show, false to hide.
+     * @param showSpanText True to show, false to hide.
      */
     @Override
-    public void showRangeText(boolean showRangeText) {
-        this.isRangeTextShown = showRangeText;
+    public void showSpanText(boolean showSpanText) {
+        this.isSpanTextShown = showSpanText;
         requestLayout();
         invalidate();
     }
 
     /**
-     * Set the color of the range summary text.
+     * Set the color of the span summary text.
      *
      * @param color The text color.
      */
     @Override
-    public void setRangeTextColor(@ColorInt int color) {
-        this.rangeTextColor = color;
+    public void setSpanTextColor(@ColorInt int color) {
+        this.spanTextColor = color;
         invalidate();
     }
 
     /**
-     * Get the color of the range summary text.
+     * Get the color of the span summary text.
      *
      * @return The text color.
      */
     @Override
     @ColorInt
-    public int getRangeTextColor() {
-        return rangeTextColor;
+    public int getSpanTextColor() {
+        return spanTextColor;
     }
 
     /**
-     * Set the size of the range summary text.
+     * Set the size of the span summary text.
      *
      * @param size Size in SP.
      */
     @Override
-    public void setRangeTextSize(float size) {
-        this.rangeTextSize = sp(size);
+    public void setSpanTextSize(float size) {
+        this.spanTextSize = sp(size);
         requestLayout();
         invalidate();
     }
 
     /**
-     * Get the size of the range summary text.
+     * Get the size of the span summary text.
      *
      * @return Size in SP.
      */
     @Override
-    public float getRangeTextSize() {
-        return rangeTextSize;
+    public float getSpanTextSize() {
+        return spanTextSize;
     }
 
     /**
-     * Set the typeface style for the range summary text (e.g., Typeface.BOLD).
+     * Set the typeface style for the span summary text (e.g., Typeface.BOLD).
      *
      * @param style The typeface style.
      */
     @Override
-    public void setRangeTextStyle(int style) {
-        this.rangeTextStyle = style;
+    public void setSpanTextStyle(int style) {
+        this.spanTextStyle = style;
         requestLayout();
         invalidate();
     }
 
     /**
-     * Get the typeface style of the range summary text.
+     * Get the typeface style of the span summary text.
      *
      * @return The typeface style.
      */
     @Override
-    public int getRangeTextStyle() {
-        return rangeTextStyle;
+    public int getSpanTextStyle() {
+        return spanTextStyle;
     }
 
     /**
-     * Set the format string for the range summary text (e.g., "%1$s to %2$s").
+     * Set the format string for the span summary text (e.g., "%1$s to %2$s").
      *
      * @param format The format string.
      */
     @Override
-    public void setRangeTextFormat(String format) {
-        this.rangeTextFormat = format != null ? format : DEFAULT_RANGE_TEXT_FORMAT;
+    public void setSpanTextFormat(String format) {
+        this.spanTextFormat = format != null ? format : DEFAULT_SPAN_TEXT_FORMAT;
         invalidate();
     }
 
     /**
-     * Get the current format string for the range summary text.
+     * Get the current format string for the span summary text.
      *
      * @return The format string.
      */
     @Override
-    public String getRangeTextFormat() {
-        return rangeTextFormat;
+    public String getSpanTextFormat() {
+        return spanTextFormat;
     }
 
     /**
-     * Set the relative position of the range summary text (TOP, BOTTOM, CENTER).
+     * Set the relative position of the span summary text (TOP, BOTTOM, CENTER).
      *
      * @param position The position to set.
      */
     @Override
-    public void setRangeTextPosition(@NonNull RangeTextPosition position) {
-        this.rangeTextPosition = position;
+    public void setSpanTextPosition(@NonNull SpanTextPosition position) {
+        this.spanTextPosition = position;
         requestLayout();
         invalidate();
     }
 
     /**
-     * Get the current relative position of the range summary text.
+     * Get the current relative position of the span summary text.
      *
      * @return The current position.
      */
     @Override
     @NonNull
-    public RangeTextPosition getRangeTextPosition() {
-        return rangeTextPosition;
+    public SpanTextPosition getSpanTextPosition() {
+        return spanTextPosition;
     }
 
     /**
-     * Set the color of the active range track.
+     * Set the color of the active span track.
      *
-     * @param color The range color.
+     * @param color The span color.
      */
     @Override
-    public void setRangeColor(@ColorInt int color) {
-        this.rangeColor = color;
+    public void setSpanColor(@ColorInt int color) {
+        this.spanColor = color;
         invalidate();
     }
 
     /**
-     * Get the color of the active range track.
+     * Get the color of the active span track.
      *
-     * @return The range color.
+     * @return The span color.
      */
     @Override
     @ColorInt
-    public int getRangeColor() {
-        return rangeColor;
+    public int getSpanColor() {
+        return spanColor;
     }
 
     /**
@@ -1434,9 +1450,7 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     }
 
     /**
-     * Check if the picker is currently using 24-hour format.
-     *
-     * @return True if 24-hour format.
+     * Check if the selector is currently using 24-hour format.
      */
     @Override
     public boolean is24HourFormat() {
@@ -1456,31 +1470,31 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
     }
 
     /**
-     * Notifies the listener about a range change event.
+     * Notifies the listener about a span change event.
      *
      * @param finished True if the user has finished the interaction, false otherwise.
      */
-    protected void notifyRangeChanged(boolean finished) {
-        if (listener != null) {
+    protected void notifySpanChanged(boolean finished) {
+        if (spanChangeListener != null) {
             if (finished) {
-                listener.onInteractionFinished(currentStartMinutes, currentEndMinutes, isOvernight());
+                spanChangeListener.onInteractionFinished(currentStartMinutes, currentEndMinutes, isOvernight());
             } else {
-                listener.onRangeChanged(currentStartMinutes, currentEndMinutes, isOvernight());
+                spanChangeListener.onSpanChanged(currentStartMinutes, currentEndMinutes, isOvernight());
             }
         }
     }
 
     /**
-     * Returns the formatted string representation of the currently selected time range.
+     * Returns the formatted string representation of the currently selected time span.
      *
-     * @return Formatted range text.
+     * @return Formatted span text.
      */
-    protected String getFormattedRangeText() {
+    protected String getFormattedSpanText() {
         String am = getContext().getString(R.string.tss_am);
         String pm = getContext().getString(R.string.tss_pm);
         String startStr = TimeUtils.formatDisplayTime(currentStartMinutes, is24HourFormat, am, pm);
         String endStr = TimeUtils.formatDisplayTime(currentEndMinutes, is24HourFormat, am, pm);
-        return String.format(rangeTextFormat, startStr, endStr);
+        return String.format(spanTextFormat, startStr, endStr);
     }
 
     @Nullable

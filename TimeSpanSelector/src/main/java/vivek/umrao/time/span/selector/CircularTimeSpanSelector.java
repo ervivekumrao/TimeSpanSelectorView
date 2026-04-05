@@ -46,10 +46,10 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
     private static final float DEGREES_PER_HOUR = DEGREES_IN_CIRCLE / HOURS_IN_DAY;
 
     private final Paint ringPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint rangePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint spanPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint tickPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint tickLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint rangeTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint spanTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint thumbPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint thumbShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint thumbStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -104,11 +104,11 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
         hourTickWidth = dp(2.0f);
         minuteTickWidth = dp(1.0f);
         thumbTouchRadiusPadding = hourTickHeight + dp(2f);
-        rangeTextSize = sp(12);
+        spanTextSize = sp(12);
         thumbShadowDx = dp(0.0f);
         thumbShadowDy = dp(1.0f);
         thumbElevation = dp(2);
-        rangeTextPosition = RangeTextPosition.CENTER;
+        spanTextPosition = SpanTextPosition.CENTER;
     }
 
     /**
@@ -117,7 +117,7 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
     private void initializeFromAttributes(Context context, @NonNull AttributeSet attrs) {
         try (TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircularTimeSpanSelector)) {
             thumbMinuteStep = a.getInt(R.styleable.CircularTimeSpanSelector_tss_thumbMinuteStep, DEFAULT_THUMB_MINUTE_STEP);
-            isOvernightRangeAllowed = a.getBoolean(R.styleable.CircularTimeSpanSelector_tss_allowOvernightRange, isOvernightRangeAllowed);
+            isOvernightSpanAllowed = a.getBoolean(R.styleable.CircularTimeSpanSelector_tss_allowOvernightSpan, isOvernightSpanAllowed);
 
             currentStartMinutes = getStartTimeFromAttrs(a);
             currentEndMinutes = getEndTimeFromAttrs(a);
@@ -126,7 +126,7 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
 
             trackWidth = a.getDimension(R.styleable.CircularTimeSpanSelector_tss_trackWidth, trackWidth);
             trackColor = a.getColor(R.styleable.CircularTimeSpanSelector_tss_trackColor, trackColor);
-            rangeColor = a.getColor(R.styleable.CircularTimeSpanSelector_tss_rangeColor, rangeColor);
+            spanColor = a.getColor(R.styleable.CircularTimeSpanSelector_tss_spanColor, spanColor);
             thumbFillColor = a.getColor(R.styleable.CircularTimeSpanSelector_tss_thumbFillColor, thumbFillColor);
             thumbStrokeColor = a.getColor(R.styleable.CircularTimeSpanSelector_tss_thumbStrokeColor, thumbStrokeColor);
 
@@ -160,24 +160,24 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
             is24HourFormat = a.getBoolean(R.styleable.CircularTimeSpanSelector_tss_is24HourFormat, is24HourFormat);
             showAmPmLabels = a.getBoolean(R.styleable.CircularTimeSpanSelector_tss_showAmPmLabels, showAmPmLabels);
             showTickLabels = a.getBoolean(R.styleable.CircularTimeSpanSelector_tss_showTickLabels, showTickLabels);
-            isRangeTextShown = a.getBoolean(R.styleable.CircularTimeSpanSelector_tss_showRangeText, isRangeTextShown);
+            isSpanTextShown = a.getBoolean(R.styleable.CircularTimeSpanSelector_tss_showSpanText, isSpanTextShown);
 
             if (a.hasValue(R.styleable.CircularTimeSpanSelector_tss_textColor)) {
                 int commonColor = a.getColor(R.styleable.CircularTimeSpanSelector_tss_textColor, Color.BLACK);
                 tickLabelColor = commonColor;
-                rangeTextColor = commonColor;
+                spanTextColor = commonColor;
             }
 
-            rangeTextColor = a.getColor(R.styleable.CircularTimeSpanSelector_tss_rangeTextColor, rangeTextColor);
+            spanTextColor = a.getColor(R.styleable.CircularTimeSpanSelector_tss_spanTextColor, spanTextColor);
             tickLabelColor = a.getColor(R.styleable.CircularTimeSpanSelector_tss_tickLabelColor, tickLabelColor);
-            rangeTextSize = a.getDimension(R.styleable.CircularTimeSpanSelector_tss_rangeTextSize, rangeTextSize);
-            rangeTextStyle = a.getInt(R.styleable.CircularTimeSpanSelector_tss_rangeTextStyle, rangeTextStyle);
+            spanTextSize = a.getDimension(R.styleable.CircularTimeSpanSelector_tss_spanTextSize, spanTextSize);
+            spanTextStyle = a.getInt(R.styleable.CircularTimeSpanSelector_tss_spanTextStyle, spanTextStyle);
 
-            int pos = a.getInt(R.styleable.CircularTimeSpanSelector_tss_rangeTextPosition, 2);
-            rangeTextPosition = (pos == 0) ? RangeTextPosition.TOP : (pos == 1 ? RangeTextPosition.BOTTOM : RangeTextPosition.CENTER);
+            int pos = a.getInt(R.styleable.CircularTimeSpanSelector_tss_spanTextPosition, 2);
+            spanTextPosition = (pos == 0) ? SpanTextPosition.TOP : (pos == 1 ? SpanTextPosition.BOTTOM : SpanTextPosition.CENTER);
 
-            String format = a.getString(R.styleable.CircularTimeSpanSelector_tss_rangeTextFormat);
-            if (format != null) rangeTextFormat = format;
+            String format = a.getString(R.styleable.CircularTimeSpanSelector_tss_spanTextFormat);
+            if (format != null) spanTextFormat = format;
 
             int tickStyle = a.getInt(R.styleable.CircularTimeSpanSelector_tss_tickEdgeStyle, 1);
             tickEdgeStyle = (tickStyle == 0) ? TickEdgeStyle.ROUND : TickEdgeStyle.BUTT;
@@ -185,8 +185,8 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
     }
 
     private int getStartTimeFromAttrs(TypedArray a) {
-        int minutes = a.getInt(R.styleable.CircularTimeSpanSelector_tss_rangeStartInMinutes, currentStartMinutes);
-        String timeStr = a.getString(R.styleable.CircularTimeSpanSelector_tss_rangeStartTime);
+        int minutes = a.getInt(R.styleable.CircularTimeSpanSelector_tss_spanStartInMinutes, currentStartMinutes);
+        String timeStr = a.getString(R.styleable.CircularTimeSpanSelector_tss_spanStartTime);
         if (timeStr != null) {
             try {
                 minutes = TimeUtils.convertTimeToMinutes(timeStr);
@@ -197,8 +197,8 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
     }
 
     private int getEndTimeFromAttrs(TypedArray a) {
-        int minutes = a.getInt(R.styleable.CircularTimeSpanSelector_tss_rangeEndInMinutes, currentEndMinutes);
-        String timeStr = a.getString(R.styleable.CircularTimeSpanSelector_tss_rangeEndTime);
+        int minutes = a.getInt(R.styleable.CircularTimeSpanSelector_tss_spanEndInMinutes, currentEndMinutes);
+        String timeStr = a.getString(R.styleable.CircularTimeSpanSelector_tss_spanEndTime);
         if (timeStr != null) {
             try {
                 minutes = TimeUtils.convertTimeToMinutes(timeStr);
@@ -217,10 +217,10 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
         ringPaint.setColor(trackColor);
         ringPaint.setStrokeCap(Paint.Cap.ROUND);
 
-        rangePaint.setStyle(Paint.Style.STROKE);
-        rangePaint.setStrokeWidth(trackWidth);
-        rangePaint.setColor(rangeColor);
-        rangePaint.setStrokeCap(Paint.Cap.ROUND);
+        spanPaint.setStyle(Paint.Style.STROKE);
+        spanPaint.setStrokeWidth(trackWidth);
+        spanPaint.setColor(spanColor);
+        spanPaint.setStrokeCap(Paint.Cap.ROUND);
 
         tickPaint.setStyle(Paint.Style.STROKE);
         tickPaint.setStrokeCap(tickEdgeStyle == TickEdgeStyle.ROUND ? Paint.Cap.ROUND : Paint.Cap.BUTT);
@@ -241,26 +241,26 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
         thumbStrokePaint.setStrokeWidth(thumbStrokeWidth);
         thumbStrokePaint.setColor(thumbStrokeColor);
 
-        rangeTextPaint.setColor(rangeTextColor);
-        rangeTextPaint.setTextSize(rangeTextSize);
-        rangeTextPaint.setTextAlign(Paint.Align.CENTER);
-        rangeTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, rangeTextStyle));
+        spanTextPaint.setColor(spanTextColor);
+        spanTextPaint.setTextSize(spanTextSize);
+        spanTextPaint.setTextAlign(Paint.Align.CENTER);
+        spanTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, spanTextStyle));
     }
 
     /**
-     * Set the color of the range summary text for the circular picker.
+     * Set the color of the span summary text for the circular selector.
      *
      * @param color The text color.
      */
     @Override
-    public void setRangeTextColor(int color) {
-        super.setRangeTextColor(color);
-        rangeTextPaint.setColor(rangeTextColor);
+    public void setSpanTextColor(int color) {
+        super.setSpanTextColor(color);
+        spanTextPaint.setColor(spanTextColor);
         invalidate();
     }
 
     /**
-     * Set the color of the tick labels for the circular picker.
+     * Set the color of the tick labels for the circular selector.
      *
      * @param color The label color.
      */
@@ -272,12 +272,62 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        float textSpace = 0;
+        if (isSpanTextShown && spanTextPosition != SpanTextPosition.CENTER) {
+            String text = getFormattedSpanText();
+            String[] lines = text.split("\n");
+            Paint.FontMetrics fm = spanTextPaint.getFontMetrics();
+            float lineHeight = fm.descent - fm.ascent;
+            float totalBlockHeight = lines.length * lineHeight;
+            float margin = dp(12);
+            textSpace = totalBlockHeight + margin;
+        }
+
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+
+        if (heightMode != MeasureSpec.EXACTLY) {
+            float safePadding = Math.max(thumbRadius + thumbElevation, trackWidth / 2f) + thumbStrokeWidth + dp(4);
+            int minHeight = (int) (dp(200) + safePadding * 2 + textSpace); // reasonable default
+            height = resolveSize(minHeight, heightMeasureSpec);
+        }
+        setMeasuredDimension(width, height);
+    }
+
+    @Override
     protected void onSizeChanged(int w, int h, int oldWidth, int oldHeight) {
         super.onSizeChanged(w, h, oldWidth, oldHeight);
+        float textSpaceTop = 0;
+        float textSpaceBottom = 0;
+        float margin = dp(12);
+
+        if (isSpanTextShown) {
+            String text = getFormattedSpanText();
+            String[] lines = text.split("\n");
+            Paint.FontMetrics fm = spanTextPaint.getFontMetrics();
+            float lineHeight = fm.descent - fm.ascent;
+            float totalBlockHeight = lines.length * lineHeight;
+
+            if (spanTextPosition == SpanTextPosition.TOP) {
+                textSpaceTop = totalBlockHeight + margin;
+            } else if (spanTextPosition == SpanTextPosition.BOTTOM) {
+                textSpaceBottom = totalBlockHeight + margin;
+            }
+        }
+
         float safePadding = Math.max(thumbRadius + thumbElevation, trackWidth / 2f) + thumbStrokeWidth + dp(4);
         cx = w / 2f;
-        cy = h / 2f;
-        viewRadius = Math.min(w, h) / 2f - safePadding;
+
+        float availableHeight = h - getPaddingTop() - getPaddingBottom() - textSpaceTop - textSpaceBottom;
+        float availableWidth = w - getPaddingLeft() - getPaddingRight();
+
+        viewRadius = Math.min(availableWidth, availableHeight) / 2f - safePadding;
+
+        // Center the ring in the available space after accounting for text
+        cy = getPaddingTop() + textSpaceTop + (availableHeight / 2f);
+
         if (viewRadius > 0) {
             drawingOval.set(cx - viewRadius, cy - viewRadius, cx + viewRadius, cy + viewRadius);
         } else {
@@ -292,43 +342,49 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
 
         canvas.drawCircle(cx, cy, viewRadius, ringPaint);
         drawTicksAndLabels(canvas);
-        drawRangeArc(canvas);
+        drawSpanArc(canvas);
         drawThumb(canvas);
-        drawRangeText(canvas);
+        drawSpanText(canvas);
     }
 
     /**
-     * Draws the range summary text in the center of the dial (or top/bottom as configured).
+     * Draws the span summary text in the center of the dial (or top/bottom as configured).
+     * TOP and BOTTOM positions are placed outside the ring with a margin.
      *
      * @param canvas The canvas to draw on.
      */
-    private void drawRangeText(Canvas canvas) {
-        if (!isRangeTextShown) return;
-        String text = getFormattedRangeText();
-        float centerX = getWidth() / 2f;
-        float centerY = getHeight() / 2f;
+    private void drawSpanText(Canvas canvas) {
+        if (!isSpanTextShown) return;
+        String text = getFormattedSpanText();
+        float centerX = cx;
 
         String[] lines = text.split("\n");
-        Paint.FontMetrics fm = rangeTextPaint.getFontMetrics();
+        Paint.FontMetrics fm = spanTextPaint.getFontMetrics();
         float lineHeight = fm.descent - fm.ascent;
-        float totalBlockHeight = (lines.length - 1) * lineHeight + (fm.descent - fm.ascent);
+        float totalBlockHeight = lines.length * lineHeight;
 
         float y;
-        float offset = Math.min(getWidth(), getHeight()) / 5f;
-        switch (rangeTextPosition) {
+        float margin = dp(12); // Margin to avoid overlap with the ring/thumbs
+        float outerExtent = viewRadius + Math.max(trackWidth / 2f, thumbRadius);
+
+        switch (spanTextPosition) {
             case TOP:
-                y = centerY - offset - totalBlockHeight / 2f - fm.ascent;
+                // Position above the ring
+                y = cy - outerExtent - margin - (lines.length - 1) * lineHeight - fm.descent;
                 break;
             case BOTTOM:
-                y = centerY + offset - totalBlockHeight / 2f - fm.ascent;
+                // Position below the ring
+                y = cy + outerExtent + margin - fm.ascent;
                 break;
+            case CENTER:
             default:
-                y = centerY - totalBlockHeight / 2f - fm.ascent;
+                // Position in the exact center of the ring
+                y = cy - (totalBlockHeight / 2f) - fm.ascent;
                 break;
         }
 
         for (String line : lines) {
-            canvas.drawText(line, centerX, y, rangeTextPaint);
+            canvas.drawText(line, centerX, y, spanTextPaint);
             y += lineHeight;
         }
     }
@@ -369,15 +425,15 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
     }
 
     /**
-     * Draws the active range arc between start and end times.
+     * Draws the active span arc between start and end times.
      *
      * @param canvas The canvas to draw on.
      */
-    private void drawRangeArc(@NonNull Canvas canvas) {
+    private void drawSpanArc(@NonNull Canvas canvas) {
         float startAngle = minutesToAngle(currentStartMinutes);
         float endAngle = minutesToAngle(currentEndMinutes);
         float sweep = calculateSweepAngle(startAngle, endAngle);
-        canvas.drawArc(drawingOval, startAngle - 90, sweep, false, rangePaint);
+        canvas.drawArc(drawingOval, startAngle - 90, sweep, false, spanPaint);
     }
 
     /**
@@ -474,8 +530,8 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
                         dragChangeListener.onDragStop(activeThumb);
                     }
                     activeThumb = Thumb.NONE;
-                    announceRange();
-                    notifyRangeChanged(true);
+                    announceSpan();
+                    notifySpanChanged(true);
                     performClick();
                 }
                 return true;
@@ -515,21 +571,21 @@ public class CircularTimeSpanSelector extends BaseTimeSpanSelector {
     private void updatePosition(int minutes) {
         minutes = TimeUtils.snapToStep(minutes, thumbMinuteStep);
         if (activeThumb == Thumb.START) {
-            updateRange(minutes, currentEndMinutes, true);
+            updateSpan(minutes, currentEndMinutes, true);
         } else if (activeThumb == Thumb.END) {
-            updateRange(currentStartMinutes, minutes, false);
+            updateSpan(currentStartMinutes, minutes, false);
         }
         performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
     }
 
     /**
-     * Announces the currently selected range for accessibility users.
+     * Announces the currently selected span for accessibility users.
      */
-    private void announceRange() {
+    private void announceSpan() {
         if (accessibilityManager != null && accessibilityManager.isTouchExplorationEnabled()) {
             String start = TimeUtils.formatDisplayTime(currentStartMinutes, is24HourFormat, getContext().getString(R.string.tss_am), getContext().getString(R.string.tss_pm));
             String end = TimeUtils.formatDisplayTime(currentEndMinutes, is24HourFormat, getContext().getString(R.string.tss_am), getContext().getString(R.string.tss_pm));
-            announceForAccessibility(getContext().getString(isOvernight() ? R.string.tss_accessibility_range_overnight_selected : R.string.tss_accessibility_range_selected, start, end));
+            announceForAccessibility(getContext().getString(isOvernight() ? R.string.tss_accessibility_span_overnight_selected : R.string.tss_accessibility_span_selected, start, end));
         }
     }
 

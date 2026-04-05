@@ -44,85 +44,85 @@ import org.robolectric.annotation.Config;
 @Config(sdk = {34})
 public class TimeSpanSelectorTest {
 
-    private CircularTimeSpanSelector circularPicker;
-    private LinearTimeSpanSelector linearPicker;
+    private CircularTimeSpanSelector circularSelector;
+    private LinearTimeSpanSelector linearSelector;
 
     @Before
     public void setUp() {
         Context context = ApplicationProvider.getApplicationContext();
-        circularPicker = new CircularTimeSpanSelector(context);
-        linearPicker = new LinearTimeSpanSelector(context);
+        circularSelector = new CircularTimeSpanSelector(context);
+        linearSelector = new LinearTimeSpanSelector(context);
     }
 
     @Test
     public void testDefaultValues() {
-        assertEquals(TimeSpanSelector.DEFAULT_START_MINUTES, circularPicker.getRangeStartInMinutes());
-        assertEquals(TimeSpanSelector.DEFAULT_END_MINUTES, circularPicker.getRangeEndInMinutes());
-        assertTrue(circularPicker.is24HourFormat());
-        assertTrue(circularPicker.isShowTicks());
-        assertTrue(circularPicker.isShowTickLabels());
-        assertTrue(circularPicker.isRangeTextShown());
-        assertTrue(circularPicker.isOvernightRangeAllowed());
-        assertEquals(TimeSpanSelector.DEFAULT_THUMB_MINUTE_STEP, circularPicker.getThumbMinuteStep());
+        assertEquals(TimeSpanSelector.DEFAULT_START_MINUTES, circularSelector.getSpanStartInMinutes());
+        assertEquals(TimeSpanSelector.DEFAULT_END_MINUTES, circularSelector.getSpanEndInMinutes());
+        assertTrue(circularSelector.is24HourFormat());
+        assertTrue(circularSelector.isShowTicks());
+        assertTrue(circularSelector.isShowTickLabels());
+        assertTrue(circularSelector.isSpanTextShown());
+        assertTrue(circularSelector.isOvernightSpanAllowed());
+        assertEquals(TimeSpanSelector.DEFAULT_THUMB_MINUTE_STEP, circularSelector.getThumbMinuteStep());
     }
 
     @Test
-    public void testSetRangeInMinutes() {
-        circularPicker.setRangeInMinutes(600, 1200);
-        assertEquals(600, circularPicker.getRangeStartInMinutes());
-        assertEquals(1200, circularPicker.getRangeEndInMinutes());
-        assertFalse(circularPicker.isOvernight());
+    public void testSetSpanInMinutes() {
+        circularSelector.setSpanInMinutes(600, 1200);
+        assertEquals(600, circularSelector.getSpanStartInMinutes());
+        assertEquals(1200, circularSelector.getSpanEndInMinutes());
+        assertFalse(circularSelector.isOvernight());
     }
 
     @Test
-    public void testOvernightRange() {
-        circularPicker.setRangeInMinutes(1320, 120); // 10 PM to 2 AM
-        assertTrue(circularPicker.isOvernight());
-        assertEquals(240, circularPicker.getDurationInMinutes());
+    public void testOvernightSpan() {
+        circularSelector.setSpanInMinutes(1320, 120); // 10 PM to 2 AM
+        assertTrue(circularSelector.isOvernight());
+        assertEquals(240, circularSelector.getDurationInMinutes());
     }
 
     @Test
-    public void testSetRangeStartTime() {
-        circularPicker.setRangeStartTime("08:30");
-        assertEquals(8 * 60 + 30, circularPicker.getRangeStartInMinutes());
+    public void testSetSpanStartTime() {
+        circularSelector.setSpanStartTime("08:30");
+        assertEquals(8 * 60 + 30, circularSelector.getSpanStartInMinutes());
     }
 
     @Test
-    public void testSetRangeEndTime() {
-        circularPicker.setRangeEndTime("18:45");
-        assertEquals(18 * 60 + 45, circularPicker.getRangeEndInMinutes());
+    public void testSetSpanEndTime() {
+        circularSelector.setSpanEndTime("18:45");
+        assertEquals(18 * 60 + 45, circularSelector.getSpanEndInMinutes());
     }
 
     @Test
-    public void testSetRangeTime() {
-        circularPicker.setRangeTime("10:00", "20:00");
-        assertEquals(10 * 60, circularPicker.getRangeStartInMinutes());
-        assertEquals(20 * 60, circularPicker.getRangeEndInMinutes());
+    public void testSetSpanTime() {
+        circularSelector.setSpanTime("10:00", "20:00");
+        assertEquals(10 * 60, circularSelector.getSpanStartInMinutes());
+        assertEquals(20 * 60, circularSelector.getSpanEndInMinutes());
     }
 
     @Test
-    public void testOnRangeChangeListener() {
-        TimeSpanSelector.OnRangeChangeListener listener = mock(TimeSpanSelector.OnRangeChangeListener.class);
-        circularPicker.setOnRangeChangeListener(listener);
-        assertEquals(listener, circularPicker.getOnRangeChangeListener());
+    public void testOnSpanChangeListener() {
+        TimeSpanSelector.OnSpanChangeListener listener = mock(TimeSpanSelector.OnSpanChangeListener.class);
+        circularSelector.setOnSpanChangeListener(listener);
+        assertEquals(listener, circularSelector.getOnSpanChangeListener());
 
-        circularPicker.setRangeInMinutes(500, 600);
-        verify(listener, atLeastOnce()).onRangeChanged(anyInt(), anyInt(), anyBoolean());
+        circularSelector.setSpanInMinutes(500, 600);
+        verify(listener, atLeastOnce()).onSpanChanged(anyInt(), anyInt(), anyBoolean());
     }
 
     @Test
     public void testOnTimeChangeListener() {
         TimeSpanSelector.OnTimeChangeListener listener = mock(TimeSpanSelector.OnTimeChangeListener.class);
-        circularPicker.setThumbMinuteStep(1); // Disable snapping for this test
-        circularPicker.setOnTimeChangeListener(listener);
-        assertEquals(listener, circularPicker.getOnTimeChangeListener());
+        circularSelector.setThumbMinuteStep(1); // Disable snapping for this test
+        circularSelector.setOnTimeChangeListener(listener);
+        assertEquals(listener, circularSelector.getOnTimeChangeListener());
 
         // Default: Start=540, End=1020, Duration=480
         // Setting both separately to control the order and calls
-        circularPicker.setRangeStartInMinutes(100);
+        circularSelector.setSpanStartInMinutes(100);
         verify(listener, atLeastOnce()).onStartTimeChange(100);
         
-        circularPicker.setRangeEndInMinutes(200);
+        circularSelector.setSpanEndInMinutes(200);
         verify(listener, atLeastOnce()).onEndTimeChange(200);
         
         // Duration was 480, now it's 100
@@ -132,26 +132,26 @@ public class TimeSpanSelectorTest {
     @Test
     public void testOnDragChangeListener() {
         TimeSpanSelector.OnDragChangeListener listener = mock(TimeSpanSelector.OnDragChangeListener.class);
-        circularPicker.setOnDragChangeListener(listener);
-        assertEquals(listener, circularPicker.getOnDragChangeListener());
+        circularSelector.setOnDragChangeListener(listener);
+        assertEquals(listener, circularSelector.getOnDragChangeListener());
     }
 
     @Test
     public void testOnDragChangeEvents() {
         TimeSpanSelector.OnDragChangeListener listener = mock(TimeSpanSelector.OnDragChangeListener.class);
         org.mockito.Mockito.when(listener.onDragStart(org.mockito.ArgumentMatchers.any())).thenReturn(true);
-        circularPicker.setOnDragChangeListener(listener);
+        circularSelector.setOnDragChangeListener(listener);
 
         // Layout the view to calculate dimensions
-        circularPicker.measure(View.MeasureSpec.makeMeasureSpec(1000, View.MeasureSpec.EXACTLY),
+        circularSelector.measure(View.MeasureSpec.makeMeasureSpec(1000, View.MeasureSpec.EXACTLY),
                              View.MeasureSpec.makeMeasureSpec(1000, View.MeasureSpec.EXACTLY));
-        circularPicker.layout(0, 0, 1000, 1000);
+        circularSelector.layout(0, 0, 1000, 1000);
 
         // Set start thumb to 0 minutes (12 o'clock)
-        circularPicker.setThumbMinuteStep(1);
-        circularPicker.setRangeStartInMinutes(0);
+        circularSelector.setThumbMinuteStep(1);
+        circularSelector.setSpanStartInMinutes(0);
 
-        // 12 o'clock in the picker corresponds to angle 0, which is (cx, cy - viewRadius)
+        // 12 o'clock in the selector corresponds to angle 0, which is (cx, cy - viewRadius)
         // From CircularTimeSpanSelector.onSizeChanged: cx=500, cy=500
         // viewRadius is approx 500 - 21 = 479
         float touchX = 500f;
@@ -159,12 +159,12 @@ public class TimeSpanSelectorTest {
 
         // Simulate touch down
         android.view.MotionEvent downEvent = android.view.MotionEvent.obtain(0, 0, android.view.MotionEvent.ACTION_DOWN, touchX, touchY, 0);
-        circularPicker.onTouchEvent(downEvent);
+        circularSelector.onTouchEvent(downEvent);
         verify(listener).onDragStart(TimeSpanSelector.Thumb.START);
 
         // Simulate touch up
         android.view.MotionEvent upEvent = android.view.MotionEvent.obtain(0, 0, android.view.MotionEvent.ACTION_UP, touchX, touchY, 0);
-        circularPicker.onTouchEvent(upEvent);
+        circularSelector.onTouchEvent(upEvent);
         verify(listener).onDragStop(TimeSpanSelector.Thumb.START);
         
         downEvent.recycle();
@@ -173,175 +173,175 @@ public class TimeSpanSelectorTest {
 
     @Test
     public void testMinMaxDuration() {
-        circularPicker.setMinDurationMinutes(60);
-        assertEquals(60, circularPicker.getMinDurationMinutes());
+        circularSelector.setMinDurationMinutes(60);
+        assertEquals(60, circularSelector.getMinDurationMinutes());
 
-        circularPicker.setMaxDurationMinutes(120);
-        assertEquals(120, circularPicker.getMaxDurationMinutes());
+        circularSelector.setMaxDurationMinutes(120);
+        assertEquals(120, circularSelector.getMaxDurationMinutes());
     }
 
     @Test
     public void testOvernightAllowed() {
-        circularPicker.setOvernightRangeAllowed(false);
-        assertFalse(circularPicker.isOvernightRangeAllowed());
+        circularSelector.setOvernightSpanAllowed(false);
+        assertFalse(circularSelector.isOvernightSpanAllowed());
     }
 
     @Test
     public void testThumbMinuteStep() {
-        circularPicker.setThumbMinuteStep(30);
-        assertEquals(30, circularPicker.getThumbMinuteStep());
+        circularSelector.setThumbMinuteStep(30);
+        assertEquals(30, circularSelector.getThumbMinuteStep());
     }
 
     @Test
     public void testColors() {
-        circularPicker.setAccentColor(Color.RED);
-        assertEquals(Color.RED, circularPicker.getAccentColor());
+        circularSelector.setAccentColor(Color.RED);
+        assertEquals(Color.RED, circularSelector.getAccentColor());
 
-        circularPicker.setTrackColor(Color.GRAY);
-        assertEquals(Color.GRAY, circularPicker.getTrackColor());
+        circularSelector.setTrackColor(Color.GRAY);
+        assertEquals(Color.GRAY, circularSelector.getTrackColor());
 
-        circularPicker.setRangeColor(Color.GREEN);
-        assertEquals(Color.GREEN, circularPicker.getRangeColor());
+        circularSelector.setSpanColor(Color.GREEN);
+        assertEquals(Color.GREEN, circularSelector.getSpanColor());
 
-        circularPicker.setRangeTextColor(Color.YELLOW);
-        assertEquals(Color.YELLOW, circularPicker.getRangeTextColor());
+        circularSelector.setSpanTextColor(Color.YELLOW);
+        assertEquals(Color.YELLOW, circularSelector.getSpanTextColor());
 
-        circularPicker.setThumbFillColor(Color.WHITE);
-        assertEquals(Color.WHITE, circularPicker.getThumbFillColor());
+        circularSelector.setThumbFillColor(Color.WHITE);
+        assertEquals(Color.WHITE, circularSelector.getThumbFillColor());
 
-        circularPicker.setThumbStrokeColor(Color.BLACK);
-        assertEquals(Color.BLACK, circularPicker.getThumbStrokeColor());
+        circularSelector.setThumbStrokeColor(Color.BLACK);
+        assertEquals(Color.BLACK, circularSelector.getThumbStrokeColor());
 
-        circularPicker.setThumbShadowColor(Color.DKGRAY);
-        assertEquals(Color.DKGRAY, circularPicker.getThumbShadowColor());
+        circularSelector.setThumbShadowColor(Color.DKGRAY);
+        assertEquals(Color.DKGRAY, circularSelector.getThumbShadowColor());
 
-        circularPicker.setHourTickColor(Color.RED);
-        assertEquals(Color.RED, circularPicker.getHourTickColor());
+        circularSelector.setHourTickColor(Color.RED);
+        assertEquals(Color.RED, circularSelector.getHourTickColor());
 
-        circularPicker.setMinuteTickColor(Color.BLUE);
-        assertEquals(Color.BLUE, circularPicker.getMinuteTickColor());
+        circularSelector.setMinuteTickColor(Color.BLUE);
+        assertEquals(Color.BLUE, circularSelector.getMinuteTickColor());
 
-        circularPicker.setTickLabelColor(Color.MAGENTA);
-        assertEquals(Color.MAGENTA, circularPicker.getTickLabelColor());
+        circularSelector.setTickLabelColor(Color.MAGENTA);
+        assertEquals(Color.MAGENTA, circularSelector.getTickLabelColor());
     }
 
     @Test
     public void testTextSettings() {
-        circularPicker.showRangeText(false);
-        assertFalse(circularPicker.isRangeTextShown());
+        circularSelector.showSpanText(false);
+        assertFalse(circularSelector.isSpanTextShown());
 
-        circularPicker.setRangeTextSize(20f);
-        assertEquals(20f, circularPicker.getRangeTextSize(), 0.1f);
+        circularSelector.setSpanTextSize(20f);
+        assertEquals(20f, circularSelector.getSpanTextSize(), 0.1f);
 
-        circularPicker.setRangeTextStyle(Typeface.BOLD);
-        assertEquals(Typeface.BOLD, circularPicker.getRangeTextStyle());
+        circularSelector.setSpanTextStyle(Typeface.BOLD);
+        assertEquals(Typeface.BOLD, circularSelector.getSpanTextStyle());
 
-        circularPicker.setRangeTextFormat("%s to %s");
-        assertEquals("%s to %s", circularPicker.getRangeTextFormat());
+        circularSelector.setSpanTextFormat("%s to %s");
+        assertEquals("%s to %s", circularSelector.getSpanTextFormat());
 
-        circularPicker.setRangeTextPosition(TimeSpanSelector.RangeTextPosition.CENTER);
-        assertEquals(TimeSpanSelector.RangeTextPosition.CENTER, circularPicker.getRangeTextPosition());
+        circularSelector.setSpanTextPosition(TimeSpanSelector.SpanTextPosition.CENTER);
+        assertEquals(TimeSpanSelector.SpanTextPosition.CENTER, circularSelector.getSpanTextPosition());
     }
 
     @Test
     public void testThumbSettings() {
-        circularPicker.setThumbRadius(15f);
-        assertEquals(15f, circularPicker.getThumbRadius(), 0.1f);
+        circularSelector.setThumbRadius(15f);
+        assertEquals(15f, circularSelector.getThumbRadius(), 0.1f);
 
-        circularPicker.setThumbTouchRadiusPadding(10f);
-        assertEquals(10f, circularPicker.getThumbTouchRadiusPadding(), 0.1f);
+        circularSelector.setThumbTouchRadiusPadding(10f);
+        assertEquals(10f, circularSelector.getThumbTouchRadiusPadding(), 0.1f);
 
-        circularPicker.setThumbStrokeWidth(2f);
-        assertEquals(2f, circularPicker.getThumbStrokeWidth(), 0.1f);
+        circularSelector.setThumbStrokeWidth(2f);
+        assertEquals(2f, circularSelector.getThumbStrokeWidth(), 0.1f);
 
-        circularPicker.setThumbElevation(5f);
-        assertEquals(5f, circularPicker.getThumbElevation(), 0.1f);
+        circularSelector.setThumbElevation(5f);
+        assertEquals(5f, circularSelector.getThumbElevation(), 0.1f);
 
-        circularPicker.setThumbShadowDx(1f);
-        assertEquals(1f, circularPicker.getThumbShadowDx(), 0.1f);
+        circularSelector.setThumbShadowDx(1f);
+        assertEquals(1f, circularSelector.getThumbShadowDx(), 0.1f);
 
-        circularPicker.setThumbShadowDy(1f);
-        assertEquals(1f, circularPicker.getThumbShadowDy(), 0.1f);
+        circularSelector.setThumbShadowDy(1f);
+        assertEquals(1f, circularSelector.getThumbShadowDy(), 0.1f);
     }
 
     @Test
     public void testTickSettings() {
-        circularPicker.setShowTicks(false);
-        assertFalse(circularPicker.isShowTicks());
+        circularSelector.setShowTicks(false);
+        assertFalse(circularSelector.isShowTicks());
 
-        circularPicker.setShowTickLabels(false);
-        assertFalse(circularPicker.isShowTickLabels());
+        circularSelector.setShowTickLabels(false);
+        assertFalse(circularSelector.isShowTickLabels());
 
-        circularPicker.setTickDistanceFromTrack(10f);
-        assertEquals(10f, circularPicker.getTickDistanceFromTrack(), 0.1f);
+        circularSelector.setTickDistanceFromTrack(10f);
+        assertEquals(10f, circularSelector.getTickDistanceFromTrack(), 0.1f);
 
-        circularPicker.setTickLabelDistanceFromTick(5f);
-        assertEquals(5f, circularPicker.getTickLabelDistanceFromTick(), 0.1f);
+        circularSelector.setTickLabelDistanceFromTick(5f);
+        assertEquals(5f, circularSelector.getTickLabelDistanceFromTick(), 0.1f);
 
-        circularPicker.setTickLabelSize(12f);
-        assertEquals(12f, circularPicker.getTickLabelSize(), 0.1f);
+        circularSelector.setTickLabelSize(12f);
+        assertEquals(12f, circularSelector.getTickLabelSize(), 0.1f);
 
-        circularPicker.setTickLabelStyle(Typeface.ITALIC);
-        assertEquals(Typeface.ITALIC, circularPicker.getTickLabelStyle());
+        circularSelector.setTickLabelStyle(Typeface.ITALIC);
+        assertEquals(Typeface.ITALIC, circularSelector.getTickLabelStyle());
 
-        circularPicker.showAmPmLabels(true);
-        assertTrue(circularPicker.isAmPmLabelsShown());
+        circularSelector.showAmPmLabels(true);
+        assertTrue(circularSelector.isAmPmLabelsShown());
 
-        circularPicker.setHourTickWidth(4f);
-        assertEquals(4f, circularPicker.getHourTickWidth(), 0.1f);
+        circularSelector.setHourTickWidth(4f);
+        assertEquals(4f, circularSelector.getHourTickWidth(), 0.1f);
 
-        circularPicker.setMinuteTickWidth(2f);
-        assertEquals(2f, circularPicker.getMinuteTickWidth(), 0.1f);
+        circularSelector.setMinuteTickWidth(2f);
+        assertEquals(2f, circularSelector.getMinuteTickWidth(), 0.1f);
 
-        circularPicker.setHourTickHeight(20f);
-        assertEquals(20f, circularPicker.getHourTickHeight(), 0.1f);
+        circularSelector.setHourTickHeight(20f);
+        assertEquals(20f, circularSelector.getHourTickHeight(), 0.1f);
 
-        circularPicker.setMinuteTickHeight(10f);
-        assertEquals(10f, circularPicker.getMinuteTickHeight(), 0.1f);
+        circularSelector.setMinuteTickHeight(10f);
+        assertEquals(10f, circularSelector.getMinuteTickHeight(), 0.1f);
 
-        circularPicker.setTickEdgeStyle(TimeSpanSelector.TickEdgeStyle.ROUND);
-        assertEquals(TimeSpanSelector.TickEdgeStyle.ROUND, circularPicker.getTickEdgeStyle());
+        circularSelector.setTickEdgeStyle(TimeSpanSelector.TickEdgeStyle.ROUND);
+        assertEquals(TimeSpanSelector.TickEdgeStyle.ROUND, circularSelector.getTickEdgeStyle());
     }
 
     @Test
     public void testTrackSettings() {
-        circularPicker.setTrackWidth(10f);
-        assertEquals(10f, circularPicker.getTrackWidth(), 0.1f);
+        circularSelector.setTrackWidth(10f);
+        assertEquals(10f, circularSelector.getTrackWidth(), 0.1f);
     }
 
     @Test
     public void test24HourFormat() {
-        circularPicker.set24HourFormat(false);
-        assertFalse(circularPicker.is24HourFormat());
+        circularSelector.set24HourFormat(false);
+        assertFalse(circularSelector.is24HourFormat());
     }
 
     @Test
     public void testThumbDrawables() {
-        circularPicker.setStartThumbDrawable(android.R.drawable.ic_menu_add);
-        assertTrue(circularPicker.isStartThumbDrawableSet());
-        assertNotNull(circularPicker.getStartThumbDrawable());
+        circularSelector.setStartThumbDrawable(android.R.drawable.ic_menu_add);
+        assertTrue(circularSelector.isStartThumbDrawableSet());
+        assertNotNull(circularSelector.getStartThumbDrawable());
 
-        circularPicker.setEndThumbDrawable(android.R.drawable.ic_menu_delete);
-        assertTrue(circularPicker.isEndThumbDrawableSet());
-        assertNotNull(circularPicker.getEndThumbDrawable());
+        circularSelector.setEndThumbDrawable(android.R.drawable.ic_menu_delete);
+        assertTrue(circularSelector.isEndThumbDrawableSet());
+        assertNotNull(circularSelector.getEndThumbDrawable());
 
-        circularPicker.setStartThumbDrawableTintColor(Color.RED);
-        assertEquals(Color.RED, circularPicker.getStartThumbDrawableTintColor());
+        circularSelector.setStartThumbDrawableTintColor(Color.RED);
+        assertEquals(Color.RED, circularSelector.getStartThumbDrawableTintColor());
 
-        circularPicker.setEndThumbDrawableTintColor(Color.BLUE);
-        assertEquals(Color.BLUE, circularPicker.getEndThumbDrawableTintColor());
+        circularSelector.setEndThumbDrawableTintColor(Color.BLUE);
+        assertEquals(Color.BLUE, circularSelector.getEndThumbDrawableTintColor());
     }
 
     @Test
-    public void testLinearPickerApis() {
+    public void testLinearSelectorApis() {
         // Since both inherit from BaseTimeSpanSelector, testing some specific ones on Linear
-        linearPicker.setThumbMinuteStep(1);
-        linearPicker.setRangeInMinutes(100, 200);
-        assertEquals(100, linearPicker.getRangeStartInMinutes());
-        assertEquals(200, linearPicker.getRangeEndInMinutes());
+        linearSelector.setThumbMinuteStep(1);
+        linearSelector.setSpanInMinutes(100, 200);
+        assertEquals(100, linearSelector.getSpanStartInMinutes());
+        assertEquals(200, linearSelector.getSpanEndInMinutes());
 
-        linearPicker.setAccentColor(Color.CYAN);
-        assertEquals(Color.CYAN, linearPicker.getAccentColor());
+        linearSelector.setAccentColor(Color.CYAN);
+        assertEquals(Color.CYAN, linearSelector.getAccentColor());
     }
 
     @Test
@@ -349,56 +349,56 @@ public class TimeSpanSelectorTest {
         Context context = ApplicationProvider.getApplicationContext();
         // Inflate from layout file to test attribute parsing
         View layout = LayoutInflater.from(context).inflate(R.layout.test_attributes, null);
-        CircularTimeSpanSelector picker = layout.findViewById(R.id.circular_selector_attrs);
+        CircularTimeSpanSelector selector = layout.findViewById(R.id.circular_selector_attrs);
 
-        assertEquals(120, picker.getRangeStartInMinutes());
-        assertEquals(240, picker.getRangeEndInMinutes());
-        assertEquals(5, picker.getThumbMinuteStep());
-        assertFalse(picker.is24HourFormat());
-        assertFalse(picker.isOvernightRangeAllowed());
-        assertEquals(30, picker.getMinDurationMinutes());
-        assertEquals(600, picker.getMaxDurationMinutes());
-        assertEquals(Color.RED, picker.getTrackColor());
-        assertEquals(Color.GREEN, picker.getRangeColor());
-        assertEquals(context.getResources().getDisplayMetrics().density * 10, picker.getTrackWidth(), 0.1f);
-        assertEquals(context.getResources().getDisplayMetrics().density * 15, picker.getThumbRadius(), 0.1f);
-        assertEquals(context.getResources().getDisplayMetrics().density * 12, picker.getThumbTouchRadiusPadding(), 0.1f);
-        assertEquals(context.getResources().getDisplayMetrics().density * 2, picker.getThumbStrokeWidth(), 0.1f);
-        assertEquals(context.getResources().getDisplayMetrics().density * 20, picker.getHourTickHeight(), 0.1f);
-        assertEquals(context.getResources().getDisplayMetrics().density * 10, picker.getMinuteTickHeight(), 0.1f);
-        assertEquals(context.getResources().getDisplayMetrics().density * 4, picker.getHourTickWidth(), 0.1f);
-        assertEquals(context.getResources().getDisplayMetrics().density * 2, picker.getMinuteTickWidth(), 0.1f);
-        assertEquals(Color.BLUE, picker.getHourTickColor());
-        assertEquals(Color.YELLOW, picker.getMinuteTickColor());
-        assertTrue(picker.isShowTicks());
-        assertTrue(picker.isShowTickLabels());
-        assertEquals(context.getResources().getDisplayMetrics().density * 8, picker.getTickDistanceFromTrack(), 0.1f);
-        assertEquals(TimeSpanSelector.TickEdgeStyle.ROUND, picker.getTickEdgeStyle());
-        assertTrue(picker.isAmPmLabelsShown());
+        assertEquals(120, selector.getSpanStartInMinutes());
+        assertEquals(240, selector.getSpanEndInMinutes());
+        assertEquals(5, selector.getThumbMinuteStep());
+        assertFalse(selector.is24HourFormat());
+        assertFalse(selector.isOvernightSpanAllowed());
+        assertEquals(30, selector.getMinDurationMinutes());
+        assertEquals(600, selector.getMaxDurationMinutes());
+        assertEquals(Color.RED, selector.getTrackColor());
+        assertEquals(Color.GREEN, selector.getSpanColor());
+        assertEquals(context.getResources().getDisplayMetrics().density * 10, selector.getTrackWidth(), 0.1f);
+        assertEquals(context.getResources().getDisplayMetrics().density * 15, selector.getThumbRadius(), 0.1f);
+        assertEquals(context.getResources().getDisplayMetrics().density * 12, selector.getThumbTouchRadiusPadding(), 0.1f);
+        assertEquals(context.getResources().getDisplayMetrics().density * 2, selector.getThumbStrokeWidth(), 0.1f);
+        assertEquals(context.getResources().getDisplayMetrics().density * 20, selector.getHourTickHeight(), 0.1f);
+        assertEquals(context.getResources().getDisplayMetrics().density * 10, selector.getMinuteTickHeight(), 0.1f);
+        assertEquals(context.getResources().getDisplayMetrics().density * 4, selector.getHourTickWidth(), 0.1f);
+        assertEquals(context.getResources().getDisplayMetrics().density * 2, selector.getMinuteTickWidth(), 0.1f);
+        assertEquals(Color.BLUE, selector.getHourTickColor());
+        assertEquals(Color.YELLOW, selector.getMinuteTickColor());
+        assertTrue(selector.isShowTicks());
+        assertTrue(selector.isShowTickLabels());
+        assertEquals(context.getResources().getDisplayMetrics().density * 8, selector.getTickDistanceFromTrack(), 0.1f);
+        assertEquals(TimeSpanSelector.TickEdgeStyle.ROUND, selector.getTickEdgeStyle());
+        assertTrue(selector.isAmPmLabelsShown());
         // Using 14sp -> density * 14
-        assertEquals(context.getResources().getDisplayMetrics().scaledDensity * 14, picker.getTickLabelSize(), 0.1f);
-        assertEquals(Color.MAGENTA, picker.getTickLabelColor());
-        assertEquals(Typeface.BOLD, picker.getTickLabelStyle());
-        assertEquals(context.getResources().getDisplayMetrics().density * 6, picker.getTickLabelDistanceFromTick(), 0.1f);
-        assertEquals(Color.WHITE, picker.getThumbFillColor());
-        assertEquals(Color.BLACK, picker.getThumbStrokeColor());
-        assertEquals(context.getResources().getDisplayMetrics().density * 3, picker.getThumbShadowDx(), 0.1f);
-        assertEquals(context.getResources().getDisplayMetrics().density * 3, picker.getThumbShadowDy(), 0.1f);
-        assertEquals(context.getResources().getDisplayMetrics().density * 4, picker.getThumbElevation(), 0.1f);
-        assertEquals(0xFF888888, picker.getThumbShadowColor());
+        assertEquals(context.getResources().getDisplayMetrics().scaledDensity * 14, selector.getTickLabelSize(), 0.1f);
+        assertEquals(Color.MAGENTA, selector.getTickLabelColor());
+        assertEquals(Typeface.BOLD, selector.getTickLabelStyle());
+        assertEquals(context.getResources().getDisplayMetrics().density * 6, selector.getTickLabelDistanceFromTick(), 0.1f);
+        assertEquals(Color.WHITE, selector.getThumbFillColor());
+        assertEquals(Color.BLACK, selector.getThumbStrokeColor());
+        assertEquals(context.getResources().getDisplayMetrics().density * 3, selector.getThumbShadowDx(), 0.1f);
+        assertEquals(context.getResources().getDisplayMetrics().density * 3, selector.getThumbShadowDy(), 0.1f);
+        assertEquals(context.getResources().getDisplayMetrics().density * 4, selector.getThumbElevation(), 0.1f);
+        assertEquals(0xFF888888, selector.getThumbShadowColor());
 
-        assertTrue(picker.isRangeTextShown());
-        assertEquals(Color.CYAN, picker.getRangeTextColor());
-        assertEquals(context.getResources().getDisplayMetrics().scaledDensity * 18, picker.getRangeTextSize(), 0.1f);
-        assertEquals("Selected: %1$s to %2$s", picker.getRangeTextFormat());
-        assertEquals(Typeface.ITALIC, picker.getRangeTextStyle());
-        assertEquals(TimeSpanSelector.RangeTextPosition.TOP, picker.getRangeTextPosition());
+        assertTrue(selector.isSpanTextShown());
+        assertEquals(Color.CYAN, selector.getSpanTextColor());
+        assertEquals(context.getResources().getDisplayMetrics().scaledDensity * 18, selector.getSpanTextSize(), 0.1f);
+        assertEquals("Selected: %1$s to %2$s", selector.getSpanTextFormat());
+        assertEquals(Typeface.ITALIC, selector.getSpanTextStyle());
+        assertEquals(TimeSpanSelector.SpanTextPosition.TOP, selector.getSpanTextPosition());
 
-        // Linear Picker
-        LinearTimeSpanSelector linearPicker = layout.findViewById(R.id.linear_selector_attrs);
-        assertEquals(8 * 60, linearPicker.getRangeStartInMinutes());
-        assertEquals(20 * 60, linearPicker.getRangeEndInMinutes());
-        assertEquals(0xFF333333, linearPicker.getRangeTextColor());
-        assertEquals(0xFF333333, linearPicker.getTickLabelColor());
+        // Linear Selector
+        LinearTimeSpanSelector linearSelector = layout.findViewById(R.id.linear_selector_attrs);
+        assertEquals(8 * 60, linearSelector.getSpanStartInMinutes());
+        assertEquals(20 * 60, linearSelector.getSpanEndInMinutes());
+        assertEquals(0xFF333333, linearSelector.getSpanTextColor());
+        assertEquals(0xFF333333, linearSelector.getTickLabelColor());
     }
 }
