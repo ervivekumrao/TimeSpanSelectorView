@@ -126,7 +126,7 @@ public class TimeSpanSelectorTest {
         verify(listener, atLeastOnce()).onEndTimeChange(200);
         
         // Duration was 480, now it's 100
-        verify(listener, atLeastOnce()).onDurationChange(100);
+        verify(listener, atLeastOnce()).onDurationChange(100, 200);
     }
 
     @Test

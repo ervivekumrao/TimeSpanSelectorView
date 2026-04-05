@@ -31,7 +31,7 @@ if (secretPropsFile.exists()) {
 
 val libGroupID = "io.github.ervivekumrao"
 val libArtifactID = "time-span-selector"
-val libVersion = "0.0.6-alpha"
+val libVersion = "0.0.7-alpha"
 
 android {
     namespace = "vivek.umrao.time.span.selector"
@@ -65,7 +65,7 @@ android {
     }
 }
 
-// Configuration for Vanniktech Maven Publish Plugin
+// Configuration for Maven Publish Plugin
 // Credentials, Host (S01), and signing are configured via gradle.properties.
 mavenPublishing {
     coordinates(libGroupID, libArtifactID, libVersion)
@@ -96,7 +96,7 @@ mavenPublishing {
 }
 
 // Add GitHub Packages as an additional repository.
-// The Vanniktech plugin creates a publication named "maven" by default.
+// The plugin creates a publication named "maven" by default.
 publishing {
     repositories {
         if (secretProps.containsKey("GIT_TSS_USER")) {

@@ -327,7 +327,7 @@ public abstract class BaseTimeSpanSelector extends View implements TimeSpanSelec
                     timeChangeListener.onEndTimeChange(newEnd);
                 }
                 if (getDurationInMinutes() != oldDuration) {
-                    timeChangeListener.onDurationChange(getDurationInMinutes());
+                    timeChangeListener.onDurationChange(newStart, newEnd);
                 }
             }
         }

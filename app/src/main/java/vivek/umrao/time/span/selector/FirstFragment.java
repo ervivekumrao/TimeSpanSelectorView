@@ -59,7 +59,7 @@ public class FirstFragment extends Fragment {
             }
 
             @Override
-            public void onDurationChange(int durationMinutes) {
+            public void onDurationChange(int startTimeMinutes, int endTimeMinutes) {
                 // Handle duration change
             }
         });

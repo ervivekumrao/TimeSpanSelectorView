@@ -365,7 +365,7 @@ public class TimeSpanSelectorUITest {
             }
 
             @Override
-            public void onDurationChange(int durationMinutes) {
+            public void onDurationChange(int startTimeMinutes, int endTimeMinutes) {
             }
         });
         assertNotNull(selector.getOnTimeChangeListener());

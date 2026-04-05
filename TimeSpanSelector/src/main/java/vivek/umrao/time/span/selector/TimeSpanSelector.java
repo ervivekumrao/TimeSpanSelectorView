@@ -120,9 +120,10 @@ public interface TimeSpanSelector {
         /**
          * Called when the duration of the span changes.
          *
-         * @param durationMinutes The new duration in minutes.
+         * @param startTimeMinutes The new start time in minutes from midnight.
+         * @param endTimeMinutes   The new end time in minutes from midnight.
          */
-        void onDurationChange(int durationMinutes);
+        void onDurationChange(int startTimeMinutes, int endTimeMinutes);
     }
 
     /**

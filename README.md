@@ -258,7 +258,7 @@ selector.setOnTimeChangeListener(new TimeSpanSelector.OnTimeChangeListener() {
     }
 
     @Override
-    public void onDurationChange(int durationMinutes) {
+    public void onDurationChange(int startTimeMinutes, int endTimeMinutes) {
         // Called when total duration changes
     }
 });
@@ -270,7 +270,7 @@ selector.setOnDragChangeListener(new TimeSpanSelector.OnDragChangeListener() {
     @Override
     public boolean onDragStart(@NonNull TimeSpanSelector.Thumb thumb) {
         // Return true to allow drag, false to intercept/disable
-        // thumb can be START, END, or SPAN
+        // thumb can be START, END, or NONE
         return true; 
     }
 
